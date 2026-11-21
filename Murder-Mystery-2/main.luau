@@ -1077,11 +1077,11 @@ do
 		OnlyMobile = false,
 		ScrollBarEnabled = true,
 		Icon = "104576758791550",
-		Background = "rbxassetid://82503368188240",
+		Background = "rbxassetid://100169712600119",
 		BackgroundImageTransparency = 0.6,
 		User = { Enabled = true, Anonymous = false },
 		OpenButton = {
-			Title = "Divalar Clicklenmez",
+			Title = "Basket Baby",
 			CornerRadius = UDim.new(1, 0),
 			StrokeThickness = 2,
 			Enabled = true,
