@@ -1231,8 +1231,8 @@ do
 
 		if arg2 then
 			WindUI:Notify({
-				Title = "Discord",
-				Content = "Could not refresh Discord information",
+				Title = "Tiktok",
+				Content = "what",
 				Icon = "triangle-alert",
 				Duration = 2,
 			})
@@ -1248,13 +1248,13 @@ do
 	end
 
 	Tabs.Discord:Button({
-		Title = "Copy Discord Invite",
+		Title = "Copy Tiktok",
 		Icon = "copy",
 		Callback = function()
 			if fn22(str3) then
-				WindUI:Notify({ Title = "Discord", Content = "Invite copied to clipboard", Icon = "check", Duration = 2 })
+				WindUI:Notify({ Title = "Tiktok", Content = "Tiktok copied to clipboard", Icon = "check", Duration = 2 })
 			else
-				WindUI:Notify({ Title = "Discord", Content = str3, Icon = "link", Duration = 4 })
+				WindUI:Notify({ Title = "Titok", Content = str3, Icon = "link", Duration = 4 })
 			end
 		end,
 	})
@@ -1262,7 +1262,7 @@ do
 	budgetYield()
 
 	Tabs.Discord:Button({
-		Title = "Refresh Discord Info",
+		Title = "LÜLÜLÜLÜLÜ",
 		Icon = "refresh-cw",
 		Callback = function()
 			fn25(true)
@@ -18238,7 +18238,7 @@ do
 	end
 
 	Tabs.LocalPlayer:Button({
-		Title = "Jerk",
+		Title = "otusbir",
 		Callback = function()
 			cleanupJerk()
 			local character_ = localPlayer.Character
