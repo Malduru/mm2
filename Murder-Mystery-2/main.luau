@@ -310,7 +310,7 @@ do
 		local tbl4 = {
 			name = "HTTP requests",
 			ok = flag6,
-			features = { "Discord live information", "Compatibility report sending" },
+			features = { "TikTok profile link", "Compatibility report sending" },
 		}
 
 		local tbl5 = {
@@ -348,7 +348,7 @@ do
 		local tbl11 = {
 			name = "Clipboard",
 			ok = type(setclipboard) == "function",
-			features = { "Copy Discord invite and report" },
+			features = { "Copy TikTok profile link and report" },
 		}
 
 		local tbl12 = {
@@ -1047,7 +1047,7 @@ do
 
 					WindUI:Notify({
 						Title = "Success",
-						Content = "Discord invite link copied to your clipboard paste it on your browser",
+						Content = "TikTok profile link copied to your clipboard",
 						Duration = 2.5,
 					})
 				end,
@@ -1117,7 +1117,7 @@ do
 		})
 		budgetYield()
 
-		local discordTab = v13:Tab({ Title = "Discord", Icon = "messages-square" })
+		local tiktokTab = v13:Tab({ Title = "TikTok", Icon = "music-2" })
 		budgetYield()
 		local compatTab = v13:Tab({ Title = "UNC / sUNC", Icon = "badge-check" })
 		budgetYield()
@@ -1145,7 +1145,7 @@ do
 		local tbl3 = {
 			Messages = v11,
 			Panel = v12,
-			Discord = discordTab,
+			TikTok = tiktokTab,
 			Compatibility = compatTab,
 			Donate = donateTab,
 			Visuals = visualsTab,
@@ -1171,103 +1171,28 @@ do
 	Tabs = fn20()
 	game:GetService("RunService").Heartbeat:Wait()
 
-	local HttpService2 = game:GetService("HttpService")
-	local str2 = "v8ZPq4y2nD"
-	local str3 = "https://discord.gg/" .. str2
-	local str4 = "https://discord.com/api/v10/invites/" .. str2 .. "?with_counts=true&with_expiration=true"
+	local tiktokUrl = "https://www.tiktok.com/@memetfaki2"
 
-	local v11 = Tabs.Discord:Paragraph({
-		Title = "Foxname Community",
-		Desc = "Loading Discord information...",
-		Image = "messages-square",
+	local tiktokInfo = Tabs.TikTok:Paragraph({
+		Title = "TikTok Profile",
+		Desc = "TikTok: @memetfaki2\n" .. tiktokUrl,
+		Image = "music-2",
 		ImageSize = 42,
 	})
 
-	local function fn22(arg)
-		return FoxnameCopyToClipboard(arg)
-	end
-
-	local function fn23()
-		local ok, result = pcall(function()
-			return HttpService2:JSONDecode(game:HttpGet(str4))
-		end)
-
-		if ok and type(result) == "table" and type(result.guild) == "table" then
-			return result
-		end
-		return nil
-	end
-
-	local function fn24(arg, arg2)
-		if arg then
-			local guild = arg.guild
-			local icon = type(guild.icon) == "string"
-				and ("https://cdn.discordapp.com/icons/" .. tostring(guild.id) .. "/" .. guild.icon .. ".png?size=1024")
-				or "messages-square"
-
-			pcall(function()
-				v11:SetTitle(tostring(guild.name or "Foxname Community"))
-				v11:SetDesc("<font color=\"#22C55E\"><b>LIVE</b></font>  Foxname community server" .. "\nMembers: " .. tostring(arg.approximate_member_count or "?") .. "  |  Online: " .. tostring(arg.approximate_presence_count or "?") .. "\n<font color=\"#94A3B8\">discord.gg/" .. str2 .. "</font>")
-				v11:SetImage(icon, 42)
-			end)
-
-			if arg2 then
-				WindUI:Notify({
-					Title = "Discord",
-					Content = "Community information updated",
-					Icon = "refresh-cw",
-					Duration = 2,
-				})
-			end
-
-			return true
-		end
-
-		pcall(function()
-			v11:SetTitle("Foxname Community")
-			v11:SetDesc("Live Discord information is unavailable.\n" .. str3)
-			v11:SetImage("wifi-off", 34)
-		end)
-
-		if arg2 then
-			WindUI:Notify({
-				Title = "Tiktok",
-				Content = "what",
-				Icon = "triangle-alert",
-				Duration = 2,
-			})
-		end
-
-		return false
-	end
-
-	local function fn25(arg)
-		task.spawn(function()
-			fn24(fn23(), arg)
-		end)
-	end
-
-	Tabs.Discord:Button({
-		Title = "Copy Tiktok",
+	Tabs.TikTok:Button({
+		Title = "Copy TikTok Link",
 		Icon = "copy",
 		Callback = function()
-			if fn22(str3) then
-				WindUI:Notify({ Title = "Tiktok", Content = "Tiktok copied to clipboard", Icon = "check", Duration = 2 })
+			if FoxnameCopyToClipboard(tiktokUrl) then
+				WindUI:Notify({ Title = "TikTok", Content = "TikTok link copied to clipboard", Icon = "check", Duration = 2 })
 			else
-				WindUI:Notify({ Title = "Titok", Content = str3, Icon = "link", Duration = 4 })
+				WindUI:Notify({ Title = "TikTok", Content = tiktokUrl, Icon = "link", Duration = 4 })
 			end
 		end,
 	})
 
 	budgetYield()
-
-	Tabs.Discord:Button({
-		Title = "LÜLÜLÜLÜLÜ",
-		Icon = "refresh-cw",
-		Callback = function()
-			fn25(true)
-		end,
-	})
 
 	local str5 = tostring(genv.FOXNAME_COMPATIBILITY_REPORT_ENDPOINT or "")
 	local tbl3 = {}
