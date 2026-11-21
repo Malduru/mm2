@@ -11359,7 +11359,7 @@ trackConn(Players.PlayerRemoving:Connect(function(player)
 	fn32(player)
 end))
 
-Hub.ReexecuteScriptUrl = "https://raw.githubusercontent.com/FoxnameTeam/OSS/development/Murder-Mystery-2/main.luau"
+Hub.ReexecuteScriptUrl = "https://raw.githubusercontent.com/Malduru/mm2/main/Murder-Mystery-2/main.luau"
 Hub.AdminReexecuteScriptUrl = Hub.ReexecuteScriptUrl
 Hub.CoinFarmKickRecoveryStarted = false
 Hub.SuppressCoinFarmKickRecovery = false
@@ -12727,7 +12727,7 @@ do
 				end
 
 				if not ok then
-					local ok2, result = pcall(game.HttpGet, game, "https://raw.githubusercontent.com/FoxnameTeam/OSS/main/Murder-Mystery-2/icons/" .. arg)
+					local ok2, result = pcall(game.HttpGet, game, "https://raw.githubusercontent.com/Malduru/mm2/main/Murder-Mystery-2/icons/" .. arg)
 
 					if ok2 and fn41(result) then
 						writefile(str, result)
