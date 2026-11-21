@@ -1,8 +1,8 @@
 task.defer(function()
 	pcall(function()
 		game:GetService("StarterGui"):SetCore("SendNotification", {
-			Title = "Foxname",
-			Text = "Script is loading. This may take a few seconds...",
+			Title = "memetfaki2 xd",
+			Text = "Baba Sakin Ya ykleniyo İşte.",
 			Icon = "rbxassetid://133245078123989",
 			Duration = 5,
 		})
