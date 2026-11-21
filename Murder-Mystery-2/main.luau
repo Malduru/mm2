@@ -1081,7 +1081,7 @@ do
 		BackgroundImageTransparency = 0.6,
 		User = { Enabled = true, Anonymous = false },
 		OpenButton = {
-			Title = "Open Menu",
+			Title = "Elle beni",
 			CornerRadius = UDim.new(1, 0),
 			StrokeThickness = 2,
 			Enabled = true,
