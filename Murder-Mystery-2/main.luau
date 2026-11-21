@@ -1076,7 +1076,7 @@ do
 		Draggable = true,
 		OnlyMobile = false,
 		ScrollBarEnabled = true,
-		Icon = "104576758791550",
+		Icon = "100169712600119",
 		Background = "rbxassetid://100169712600119",
 		BackgroundImageTransparency = 0.6,
 		User = { Enabled = true, Anonymous = false },
