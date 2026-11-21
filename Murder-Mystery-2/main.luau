@@ -2,7 +2,7 @@ task.defer(function()
 	pcall(function()
 		game:GetService("StarterGui"):SetCore("SendNotification", {
 			Title = "MADE By Memetfaki2",
-			Text = "Sakinyükleniyo İşte.",
+			Text = "Sakin yükleniyo İşte.",
 			Icon = "rbxassetid://17556830861",
 			Duration = 3,
 		})
