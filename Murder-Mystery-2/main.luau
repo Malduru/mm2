@@ -20830,7 +20830,7 @@ local function fn39()
 
 	local tbl8 = {
 		["No Background"] = "rbxassetid://0",
-		Main = "rbxassetid://82503368188240",
+		Main = "rbxassetid://17556830861",
 		Extra = "rbxassetid://75141440720375",
 		["Extra 1"] = "rbxassetid://131127340766745",
 		Furina = "rbxassetid://133222171266319",
