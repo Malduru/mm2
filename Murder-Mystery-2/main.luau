@@ -1034,16 +1034,16 @@ do
 	end
 
 	WindUI:Popup({
-		Title = "Before we start",
+		Title = "Naber cano",
 		Icon = "circle-alert",
-		Content = "Would you like to join our Discord server? I believe you'll have a lot of fun!",
+		Content = "Beni seviyormusun",
 		Buttons = {
 			{
-				Title = "Yeah sure",
+				Title = "Seviyorum bebiş",
 				Icon = "arrow-right",
 				Variant = "Primary",
 				Callback = function()
-					FoxnameCopyToClipboard("https://discord.gg/v8ZPq4y2nD")
+					FoxnameCopyToClipboard("https://www.tiktok.com/@memetfaki2")
 
 					WindUI:Notify({
 						Title = "Success",
@@ -1053,7 +1053,7 @@ do
 				end,
 			},
 			{
-				Title = "No fuck off",
+				Title = "Gotten yiyorum",
 				Icon = "x",
 				Variant = "Secondary",
 				Callback = function()
@@ -1066,11 +1066,11 @@ do
 	local color2 = Color3.fromHex
 
 	Window = WindUI:CreateWindow({
-		Title = fn19("Foxname - Murder Mystery 2", Color3.fromRGB(255, 64, 96), color(255, 186, 220)),
-		Author = "discord.gg/v8ZPq4y2nD",
+		Title = fn19("Memetfaki2 - Murder Mystery 2", Color3.fromRGB(255, 64, 96), color(255, 186, 220)),
+		Author = "https://www.tiktok.com/@memetfaki2",
 		Theme = "Rose",
 		Size = UDim2.fromOffset(520, 420),
-		Folder = "Foxname_MM2",
+		Folder = "Memetfaki_MM2",
 		SideBarWidth = 200,
 		Enabled = true,
 		Draggable = true,
