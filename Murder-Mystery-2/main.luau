@@ -3,7 +3,7 @@ task.defer(function()
 		game:GetService("StarterGui"):SetCore("SendNotification", {
 			Title = "MADE By Memetfaki2",
 			Text = "zenci pornosu",
-			Icon = "rbxassetid://17556830861",
+			Icon = "rbxassetid://104576758791550",
 			Duration = 3,
 		})
 	end)
@@ -1076,8 +1076,8 @@ do
 		Draggable = true,
 		OnlyMobile = false,
 		ScrollBarEnabled = true,
-		Icon = "100169712600119",
-		Background = "rbxassetid://100169712600119",
+		Icon = "104576758791550",
+		Background = "rbxassetid://104576758791550",
 		BackgroundImageTransparency = 0.6,
 		User = { Enabled = true, Anonymous = false },
 		OpenButton = {
