@@ -1076,8 +1076,8 @@ do
 		Draggable = true,
 		OnlyMobile = false,
 		ScrollBarEnabled = true,
-		Icon = "104576758791550",
-		Background = "rbxassetid://104576758791550",
+		Icon = "89046428655994	",
+		Background = "rbxassetid://89046428655994",
 		BackgroundImageTransparency = 0.6,
 		User = { Enabled = true, Anonymous = false },
 		OpenButton = {
@@ -20756,7 +20756,7 @@ local function fn39()
 	local tbl8 = {
 		["No Background"] = "rbxassetid://0",
 		Main = "rbxassetid://104576758791550",
-		Extra = "rbxassetid://75141440720375",
+		Extra = "rbxassetid://89046428655994",
 		["Extra 1"] = "rbxassetid://131127340766745",
 		Furina = "rbxassetid://133222171266319",
 		["Extra 2"] = "rbxassetid://103408204293875",
