@@ -2306,15 +2306,7 @@ end
 
 Hub.AutoPrestige.Init()
 
-task.spawn(function()
-	while foxnameMM2Runtime.alive and not isTerminated do
-		if Hub.AutoPrestige.enabled then
-			pcall(Hub.AutoPrestige.Check)
-		end
-
-		task.wait(2)
-	end
-end)
+-- AutoPrestige background polling disabled.
 
 Hub.AutoClaimReward.FireButton = function(btn)
 	if not btn or not btn:IsA("GuiButton") then
@@ -2406,19 +2398,7 @@ end
 
 Hub.AutoClaimReward.Init()
 
-task.spawn(function()
-	while foxnameMM2Runtime.alive and not isTerminated do
-		if Hub.AutoClaimReward.enabled then
-			if not Hub.AutoClaimReward.connection then
-				pcall(Hub.AutoClaimReward.Init)
-			end
-
-			pcall(Hub.AutoClaimReward.Check)
-		end
-
-		task.wait(0.5)
-	end
-end)
+-- AutoClaimReward background polling disabled; Init event connection is preserved.
 
 Hub.CoinFarm.RefreshStats = function()
 	local statsControl = Hub.CoinFarm.statsControl
@@ -4261,19 +4241,7 @@ Hub.CoinFarm.ApplyBagCount = function(arg, arg2)
 	end
 end
 
-task.spawn(function()
-	while foxnameMM2Runtime.alive and not isTerminated do
-		if Hub.CoinFarm.enabled then
-			Hub.CoinFarm.SyncEarnedXP()
-
-			if Hub.RoundState.active then
-				Hub.CoinFarm.SyncTotalCollected()
-			end
-		end
-
-		task.wait(1)
-	end
-end)
+-- CoinFarm background stats synchronization disabled.
 
 Hub.CoinFarm.CheckBagFullGui = function()
 	if not Hub.CoinFarm.enabled then
@@ -11776,35 +11744,7 @@ do
 		return true
 	end
 
-	task.spawn(function()
-		while foxnameMM2Runtime.alive and not isTerminated do
-			if Hub.CoinFarm.enabled and Hub.CoinFarm.antiBotEnabled and not Hub.CoinFarm.serverHopRunning then
-				Hub.CoinFarm.StartAntiBotServerHop()
-			end
-
-			task.wait(3)
-		end
-	end)
-
-	task.spawn(function()
-		while foxnameMM2Runtime.alive and not isTerminated do
-			if Hub.CoinFarm.enabled and Hub.CoinFarm.serverHopTimerEnabled and not Hub.CoinFarm.serverHopRunning then
-				if Hub.CoinFarm.serverHopTimerStartedAt <= 0 then
-					Hub.CoinFarm.serverHopTimerStartedAt = os.clock()
-				end
-
-				local clamp = math.clamp
-				local n2 = tonumber(Hub.CoinFarm.serverHopTimerMinutes) or 15
-				local serverHopTimerStartedAt = Hub.CoinFarm.serverHopTimerStartedAt
-
-				if clamp(n2, 10, 30) * 60 <= os.clock() - serverHopTimerStartedAt then
-					Hub.CoinFarm.StartTimerServerHop()
-				end
-			end
-
-			task.wait(1)
-		end
-	end)
+	-- CoinFarm automatic Server Hop background polling disabled.
 
 	task.spawn(function()
 		while foxnameMM2Runtime.alive and not isTerminated and not Hub.CoinFarm.resumedFromServerHop do
