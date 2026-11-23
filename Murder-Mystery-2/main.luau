@@ -20164,6 +20164,62 @@ do
 		end,
 	})
 
+	Tabs.Misc:Section({ Title = "Performance", TextXAlignment = "Center", TextSize = 17, Opened = true })
+
+	Hub.FPSCounter = {
+		enabled = false,
+		connection = nil,
+		control = nil,
+	}
+
+	Hub.FPSCounter.control = Tabs.Misc:Paragraph({
+		Title = "FPS Counter",
+		Desc = "FPS: Disabled",
+		Image = "activity",
+		ImageSize = 32,
+	})
+
+	Tabs.Misc:Toggle({
+		Title = "Show FPS",
+		Flag = "Misc_ShowFPS",
+		Default = false,
+		Callback = function(enabled)
+			local fpsCounter = Hub.FPSCounter
+			fpsCounter.enabled = enabled and true or false
+
+			if fpsCounter.connection then
+				fpsCounter.connection:Disconnect()
+				fpsCounter.connection = nil
+			end
+
+			if not fpsCounter.enabled then
+				if fpsCounter.control and type(fpsCounter.control.SetDesc) == "function" then
+					fpsCounter.control:SetDesc("FPS: Disabled")
+				end
+				return
+			end
+
+			local elapsed = 0
+			local frames = 0
+			fpsCounter.connection = game:GetService("RunService").RenderStepped:Connect(function(deltaTime)
+				if not fpsCounter.enabled then
+					return
+				end
+
+				elapsed = elapsed + deltaTime
+				frames = frames + 1
+
+				if elapsed >= 0.5 then
+					local fps = math.floor(frames / elapsed + 0.5)
+					if fpsCounter.control and type(fpsCounter.control.SetDesc) == "function" then
+						fpsCounter.control:SetDesc("FPS: " .. tostring(fps))
+					end
+					elapsed = 0
+					frames = 0
+				end
+			end)
+		end,
+	})
 	Hub.ShowTimerControl = Tabs.Misc:Toggle({
 		Title = "Show Timer",
 		Flag = "Misc_ShowTimer",
