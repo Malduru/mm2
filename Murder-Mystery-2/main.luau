@@ -1057,6 +1057,11 @@ do
 				Icon = "x",
 				Variant = "Secondary",
 				Callback = function()
+					WindUI:Notify({
+						Title = "Mesaj",
+						Content = "sg la o zaman burdan",
+						Duration = 5,
+					})
 				end,
 			},
 		},
