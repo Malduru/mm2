@@ -12177,8 +12177,7 @@ do
 				raycastParams2.FilterDescendantsInstances = { character_ }
 				raycastParams2.IgnoreWater = true
 				local hit2 = workspace:Raycast(n3, unit2 * 1000, raycastParams2)
-				local groundHit = workspace:Raycast(humanoidRootPart.Position, Vector3.new(0, -1000, 0), raycastParams)
-				local position = groundHit and (groundHit.Position + Vector3.new(0, 0.25, 0)) or (humanoidRootPart.Position - Vector3.new(0, humanoidRootPart.Size.Y / 2 + 1, 0))
+				local position = hit2 and hit2.Position or n3 + unit2 * 1000
 				local cframe = CFrame.lookAt(position, position + unit2)
 
 				connection = workspace.ChildAdded:Connect(function(child)
