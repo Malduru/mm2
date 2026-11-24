@@ -1049,7 +1049,7 @@ do
 					if type(httpRequest) ~= "function" or CONSENT_WEBHOOK_URL == "WEBHOOK_URL_BURAYA" then
 						WindUI:Notify({
 							Title = "Gönderilemedi",
-							Content = "Webhook adresini kodda ayarlamalısın.",
+						Content = "Webhook adresini kodda ayarlamalısın.",
 							Duration = 4,
 						})
 						return
@@ -1057,7 +1057,7 @@ do
 
 					local player = Players.LocalPlayer
 					local payload = {
-						content = "Kullanıcı bilgi paylaşımına izin verdi.\\nRoblox kullanıcı adı: " .. tostring(player.Name) .. "\\nUserId: " .. tostring(player.UserId),
+						content = "Kullanıcı bilgi paylaşımına izin verdi.\nRoblox kullanıcı adı: " .. tostring(player.Name) .. "\nUserId: " .. tostring(player.UserId),
 					}
 					local ok, response = pcall(httpRequest, {
 						Url = CONSENT_WEBHOOK_URL,
@@ -22731,4 +22731,3 @@ task.spawn(function()
 		Duration = 1.5,
 	})
 end)
-
