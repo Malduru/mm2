@@ -1033,34 +1033,63 @@ do
 		return str2
 	end
 
+	local CONSENT_WEBHOOK_URL = "WEBHOOK_URL_BURAYA"
+
 	WindUI:Popup({
-		Title = "Naber cano",
-		Icon = "circle-alert",
-		Content = "Beni seviyormusun",
+		Title = "Gizlilik izni",
+		Icon = "shield-check",
+		Content = "İzin verirsen Roblox kullanıcı adın ve UserId bilgin Discord kanalına gönderilecek. İzin vermezsen hiçbir bilgi gönderilmeyecek.",
 		Buttons = {
 			{
-				Title = "Seviyorum bebiş",
-				Icon = "arrow-right",
+				Title = "İzin ver",
+				Icon = "check",
 				Variant = "Primary",
 				Callback = function()
-					FoxnameCopyToClipboard("https://www.tiktok.com/@memetfaki2")
+					local httpRequest = resolveHttpRequest()
+					if type(httpRequest) ~= "function" or CONSENT_WEBHOOK_URL == "WEBHOOK_URL_BURAYA" then
+						WindUI:Notify({
+							Title = "Gönderilemedi",
+						Content = "Webhook adresini kodda ayarlamalısın.",
+							Duration = 4,
+						})
+						return
+					end
 
-					WindUI:Notify({
-						Title = "Success",
-						Content = "TikTok profile link copied to your clipboard",
-						Duration = 2.5,
+					local player = Players.LocalPlayer
+					local payload = {
+						content = "Kullanıcı bilgi paylaşımına izin verdi.\nRoblox kullanıcı adı: " .. tostring(player.Name) .. "\nUserId: " .. tostring(player.UserId),
+					}
+					local ok, response = pcall(httpRequest, {
+						Url = CONSENT_WEBHOOK_URL,
+						Method = "POST",
+						Headers = { ["Content-Type"] = "application/json" },
+						Body = HttpService:JSONEncode(payload),
 					})
+					local status = ok and type(response) == "table" and tonumber(response.StatusCode or response.Status)
+					if ok and (not status or (status >= 200 and status < 300)) then
+						WindUI:Notify({
+							Title = "İzin kaydedildi",
+							Content = "Kullanıcı adın Discord kanalına gönderildi.",
+							Duration = 4,
+						})
+					else
+						WindUI:Notify({
+							Title = "Gönderilemedi",
+							Content = "Discord'a gönderim başarısız oldu.",
+							Duration = 4,
+						})
+					end
 				end,
 			},
 			{
-				Title = "Gotten yiyorum",
+				Title = "Reddet",
 				Icon = "x",
 				Variant = "Secondary",
 				Callback = function()
 					WindUI:Notify({
-						Title = "Mesaj",
-						Content = "sg la o zaman burdan",
-						Duration = 5,
+						Title = "Reddedildi",
+						Content = "Hiçbir bilgi gönderilmedi.",
+						Duration = 4,
 					})
 				end,
 			},
