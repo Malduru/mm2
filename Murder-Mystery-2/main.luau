@@ -21012,37 +21012,38 @@ local function fn40()
 	end
 
 	local n2 = 0
+	local gunActivationConnections = setmetatable({}, { __mode = "k" })
 
 	local function fn48(child)
-		if child:IsA("Tool") and child.Name == "Gun" then
-			child.Activated:Connect(function()
-				if Hub.AimEnabled then
-					local now = os.clock()
+		if not child or not child:IsA("Tool") or child.Name ~= "Gun" or gunActivationConnections[child] then
+			return
+		end
 
-					if now - n2 > 0.25 then
-						n2 = now
+		gunActivationConnections[child] = true
+		child.Activated:Connect(function()
+			if Hub.AimEnabled then
+				local now = os.clock()
 
-						if Hub.TriggerAutoShootInput then
-							Hub.TriggerAutoShootInput()
-						elseif Hub.UpdateAutoShoot then
-							Hub.UpdateAutoShoot()
-						end
+				if now - n2 > 0.25 then
+					n2 = now
+
+					if Hub.TriggerAutoShootInput then
+						Hub.TriggerAutoShootInput()
+					elseif Hub.UpdateAutoShoot then
+						Hub.UpdateAutoShoot()
 					end
 				end
-			end)
-		end
+			end
+		end)
 	end
 
 	localPlayer.CharacterAdded:Connect(function(character_)
 		character_.ChildAdded:Connect(fn48)
 		local backpack = localPlayer:FindFirstChildOfClass("Backpack")
-
 		if backpack then
 			for _, v12 in backpack:GetChildren() do
 				fn48(v12)
 			end
-
-			backpack.ChildAdded:Connect(fn48)
 		end
 	end)
 
@@ -21051,12 +21052,10 @@ local function fn40()
 	end
 
 	local backpack = localPlayer:FindFirstChildOfClass("Backpack")
-
 	if backpack then
 		for _, v12 in backpack:GetChildren() do
 			fn48(v12)
 		end
-
 		backpack.ChildAdded:Connect(fn48)
 	end
 
