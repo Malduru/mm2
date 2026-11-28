@@ -1145,6 +1145,8 @@ do
 		budgetYield()
 		local settingsTab = Window:Tab({ Title = "Settings", Icon = "settings" })
 		budgetYield()
+		local kromTab = Window:Tab({ Title = "Krom", Icon = "message-circle" })
+		budgetYield()
 
 		local tbl3 = {
 			Messages = v11,
@@ -1161,6 +1163,7 @@ do
 			Radio = radioTab,
 			Teleports = teleportsTab,
 			Settings = settingsTab,
+			Krom = kromTab,
 		}
 
 		tbl3.ESP = tbl3.Visuals
@@ -1192,6 +1195,29 @@ do
 			else
 				WindUI:Notify({ Title = "TikTok", Content = tiktokUrl, Icon = "link", Duration = 4 })
 			end
+		end,
+	})
+
+
+	Tabs.Krom:Button({
+		Title = "Mesaj Gönder",
+		Icon = "send",
+		Callback = function()
+			local ok, err = pcall(function()
+				local textChatService = game:GetService("TextChatService")
+				local channels = textChatService:FindFirstChild("TextChannels")
+				local channel = channels and (channels:FindFirstChild("RBXGeneral") or channels:FindFirstChildWhichIsA("TextChannel"))
+				if not channel then
+					error("Sohbet kanalı bulunamadı.")
+				end
+				channel:SendAsync("merhaba memetfaki2")
+			end)
+			WindUI:Notify({
+				Title = "Krom",
+				Content = ok and "Mesaj gönderildi." or ("Mesaj gönderilemedi: " .. tostring(err)),
+				Icon = ok and "check" or "alert-circle",
+				Duration = 3,
+			})
 		end,
 	})
 
