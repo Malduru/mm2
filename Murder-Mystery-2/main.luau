@@ -1201,42 +1201,27 @@ do
 
 	local function sendRoundRoleToChat(roleName)
 		local ok, err = pcall(function()
-			-- Read the exact player objects cached by the ESP renderer.
-			if not Hub or type(Hub.ESPRenderCache) ~= "table" then
-				error("ESP rol verisi hazır değil. Player ESP'yi açıp tekrar dene.")
+			-- This callback is defined before the ESP role functions, so call the
+			-- bridge exported beside fn30/fn31 after the main Hub initialization.
+			if not Hub or type(Hub.GetESPDetectedRolePlayer) ~= "function" then
+				error("ESP rol sistemi henüz hazır değil. Birkaç saniye sonra tekrar dene.")
 			end
 
-			local cacheKey = roleName == "Murderer" and "murderer" or "sheriff"
-			local targetPlayer = nil
-
-			-- ESP refreshes these entries on RenderStepped while player ESP is active.
-			-- Give it a short window to update, then use that same cache.
-			for _ = 1, 15 do
-				local espCache = Hub.ESPRenderCache
-				targetPlayer = espCache and espCache[cacheKey] or nil
-				if targetPlayer and targetPlayer.Parent == Players then
-					break
-				end
-				targetPlayer = nil
-				task.wait(0.1)
-			end
-
-			if not targetPlayer then
-				error("ESP bu rol için oyuncu bulamadı. Player ESP açıkken tur başladıktan sonra tekrar dene.")
+			local targetPlayer = Hub.GetESPDetectedRolePlayer(roleName)
+			if not targetPlayer or targetPlayer.Parent ~= Players then
+				error(roleName == "Murderer" and "ESP katili henüz tespit edemedi." or "ESP şerifi henüz tespit edemedi.")
 			end
 
 			local textChatService = game:GetService("TextChatService")
 			local channels = textChatService:FindFirstChild("TextChannels")
 			local channel = channels and (channels:FindFirstChild("RBXGeneral") or channels:FindFirstChildWhichIsA("TextChannel"))
-			if not channel then
-				error("Sohbet kanalı bulunamadı.")
-			end
+			if not channel then error("Sohbet kanalı bulunamadı.") end
 			channel:SendAsync(targetPlayer.Name)
 		end)
 
 		WindUI:Notify({
 			Title = "Krom",
-			Content = ok and (roleName == "Murderer" and "ESP'deki katilin ismi sohbete gönderildi." or "ESP'deki şerifin ismi sohbete gönderildi.") or ("Gönderilemedi: " .. tostring(err)),
+			Content = ok and (roleName == "Murderer" and "ESP'nin bulduğu katilin ismi gönderildi." or "ESP'nin bulduğu şerifin ismi gönderildi.") or ("Gönderilemedi: " .. tostring(err)),
 			Icon = ok and "check" or "alert-circle",
 			Duration = 4,
 		})
@@ -9855,6 +9840,18 @@ do
 			return "Sheriff"
 		end
 		return "Innocent"
+	end
+
+
+	-- Krom tab uses this bridge so it invokes the very same ESP role
+	-- detection functions (fn30/fn31), in their original lexical scope.
+	Hub.GetESPDetectedRolePlayer = function(roleName)
+		if roleName == "Murderer" then
+			return fn30()
+		elseif roleName == "Sheriff" then
+			return fn31()
+		end
+		return nil
 	end
 
 	Hub.CoinFarm.flingMurderer = function()
