@@ -20508,7 +20508,19 @@ local function fn40()
 	end
 
 	local function fn47()
-		local visible = Hub.AimEnabled and not Hub.HideFOV
+		local settings = Hub
+
+		if not settings then
+			if fovDrawingCircle then
+				fovDrawingCircle.Visible = false
+			end
+			if v9 then
+				v9.Visible = false
+			end
+			return
+		end
+
+		local visible = settings.AimEnabled and not settings.HideFOV
 
 		if fovDrawingImmediate then
 		elseif fovDrawingCircle then
