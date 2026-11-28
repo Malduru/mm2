@@ -1269,7 +1269,6 @@ do
 		end,
 	})
 
-	Hub.KromAutoRoleAnnounceEnabled = false
 	Hub.KromAutoRoleAnnounceControl = Tabs.Krom:Toggle({
 		Title = "Auto Round Role Announcement",
 		Desc = "At each round start, send the Murderer and Sheriff names once.",
@@ -1493,6 +1492,7 @@ trackConn = function(arg)
 end
 
 Hub = {
+	KromAutoRoleAnnounceEnabled = false,
 	PlayerESP = false,
 	PlayerESPStyle = "Filled",
 	LineESP = false,
