@@ -1199,68 +1199,44 @@ do
 	})
 
 
-	local Hub
-
 	local function sendRoundRoleToChat(roleName)
 		local ok, err = pcall(function()
-			-- ESP ile aynı rol tespit yolunu kullan.
-			if Hub then
-				Hub.RoleState = Hub.RoleState or { cache = {} }
-				Hub.RoleState.cache = type(Hub.RoleState.cache) == "table" and Hub.RoleState.cache or {}
-				if type(Hub.RoleState.Sync) == "function" then
-					pcall(Hub.RoleState.Sync, true)
-				end
+			-- Read the exact player objects cached by the ESP renderer.
+			if not Hub or type(Hub.ESPRenderCache) ~= "table" then
+				error("ESP rol verisi hazır değil. Player ESP'yi açıp tekrar dene.")
 			end
 
+			local cacheKey = roleName == "Murderer" and "murderer" or "sheriff"
 			local targetPlayer = nil
-			if roleName == "Murderer" and type(fn30) == "function" then
-				local foundOk, found = pcall(fn30)
-				if foundOk then targetPlayer = found end
-			elseif roleName == "Sheriff" and type(fn31) == "function" then
-				local foundOk, found = pcall(fn31)
-				if foundOk then targetPlayer = found end
-			end
 
-			-- ESP yardımcıları henüz hazır değilse aynı ESP rol önbelleği/silah kontrollerine geri dön.
-			if not targetPlayer and Hub and Hub.RoleState then
-				local cache = Hub.RoleState.cache
-				if type(cache) == "table" then
-					for _, player in ipairs(Players:GetPlayers()) do
-						local entry = cache[player.Name] or cache[tostring(player.UserId)] or cache[player.UserId]
-						if type(entry) == "table" and entry.Role == roleName then
-							targetPlayer = player
-							break
-						end
-					end
+			-- ESP refreshes these entries on RenderStepped while player ESP is active.
+			-- Give it a short window to update, then use that same cache.
+			for _ = 1, 15 do
+				local espCache = Hub.ESPRenderCache
+				targetPlayer = espCache and espCache[cacheKey] or nil
+				if targetPlayer and targetPlayer.Parent == Players then
+					break
 				end
+				targetPlayer = nil
+				task.wait(0.1)
 			end
 
 			if not targetPlayer then
-				for _, player in ipairs(Players:GetPlayers()) do
-					local character = player.Character or workspace:FindFirstChild(player.Name)
-					local backpack = player:FindFirstChildOfClass("Backpack")
-					local toolName = roleName == "Murderer" and "Knife" or "Gun"
-					if (character and character:FindFirstChild(toolName, true)) or (backpack and backpack:FindFirstChild(toolName, true)) then
-						targetPlayer = player
-						break
-					end
-				end
-			end
-
-			if not targetPlayer then
-				error(roleName == "Murderer" and "ESP'nin gördüğü katil bulunamadı. Tur başladıktan sonra tekrar dene." or "ESP'nin gördüğü şerif bulunamadı. Tur başladıktan sonra tekrar dene.")
+				error("ESP bu rol için oyuncu bulamadı. Player ESP açıkken tur başladıktan sonra tekrar dene.")
 			end
 
 			local textChatService = game:GetService("TextChatService")
 			local channels = textChatService:FindFirstChild("TextChannels")
 			local channel = channels and (channels:FindFirstChild("RBXGeneral") or channels:FindFirstChildWhichIsA("TextChannel"))
-			if not channel then error("Sohbet kanalı bulunamadı.") end
+			if not channel then
+				error("Sohbet kanalı bulunamadı.")
+			end
 			channel:SendAsync(targetPlayer.Name)
 		end)
 
 		WindUI:Notify({
 			Title = "Krom",
-			Content = ok and (roleName == "Murderer" and "Katilin ismi sohbete gönderildi." or "Şerifin ismi sohbete gönderildi.") or ("Gönderilemedi: " .. tostring(err)),
+			Content = ok and (roleName == "Murderer" and "ESP'deki katilin ismi sohbete gönderildi." or "ESP'deki şerifin ismi sohbete gönderildi.") or ("Gönderilemedi: " .. tostring(err)),
 			Icon = ok and "check" or "alert-circle",
 			Duration = 4,
 		})
