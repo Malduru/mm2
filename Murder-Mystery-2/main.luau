@@ -1199,6 +1199,8 @@ do
 	})
 
 
+	local Hub
+
 	local function sendRoundRoleToChat(roleName)
 		local ok, err = pcall(function()
 			if Hub.RoleState and type(Hub.RoleState.Sync) == "function" then
@@ -1516,8 +1518,6 @@ trackConn = function(arg)
 
 	return arg
 end
-
-local Hub
 
 Hub = {
 	PlayerESP = false,
