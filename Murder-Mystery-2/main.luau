@@ -9885,7 +9885,7 @@ do
 			for attempt = 1, 20 do
 				if not Hub.KromAutoRoleAnnounceEnabled
 					or generation ~= Hub.KromAutoRoleAnnounceGeneration
-					or not Hub.RoundState.active then
+					then
 					return
 				end
 
@@ -10154,6 +10154,16 @@ do
 			if roundTimerPart then
 				v9 = trackConn(roundTimerPart:GetAttributeChangedSignal("Time"):Connect(function()
 					task.defer(updateRoundTimer)
+					local timeLeft = tonumber(roundTimerPart:GetAttribute("Time"))
+					if timeLeft and timeLeft > 0 and timeLeft <= 10
+						and Hub.KromAutoRoleAnnounceEnabled
+						and type(Hub.KromSendRoundRoleAnnouncement) == "function"
+						and Hub.KromAutoRoleAnnounceTimerTriggered ~= true then
+						Hub.KromAutoRoleAnnounceTimerTriggered = true
+						Hub.KromSendRoundRoleAnnouncement()
+					elseif timeLeft and timeLeft <= 0 then
+						Hub.KromAutoRoleAnnounceTimerTriggered = false
+					end
 				end))
 			end
 
@@ -10237,9 +10247,6 @@ do
 			trackConn(coinsStarted.OnClientEvent:Connect(function(arg)
 				Hub.RoundState.coinsReady = Hub.RoundState.active and type(arg) == "table" and (arg.Coin ~= nil or arg.Candy ~= nil)
 				Hub.CoinFarm.OnCoinsStarted(arg)
-				if Hub.RoundState.active and Hub.KromAutoRoleAnnounceEnabled and type(Hub.KromSendRoundRoleAnnouncement) == "function" then
-					Hub.KromSendRoundRoleAnnouncement()
-				end
 			end))
 		end
 
