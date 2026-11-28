@@ -4094,7 +4094,7 @@ local function findClearShotCF(char, murdRoot)
 	local extraIgnore = { char, murdRoot.Parent }
 	for _, off in ipairs(END_ROUND_CLEAR_OFFSETS) do
 		local candPos = murdRoot.Position + off
-		local candCF = CFrame.lookAt(candPos, murdRoot.Position)
+		local candCF = CFrame.new(candPos)
 		local candHead = candCF:PointToWorldSpace(Vector3.new(0, 1.5, 0))
 		local candMuzzle = candCF:PointToWorldSpace(Vector3.new(1.4, 1.25, -3.45))
 		if raycastClear(murdRoot.Position, candPos - murdRoot.Position, extraIgnore)
@@ -4203,10 +4203,6 @@ local function tryEndRoundShoot(endRoundGeneration, shootState, attemptIdx)
 			if not Hub.RoundState.active or not Hub.CoinFarm.enabled or Hub.CoinFarm.endRoundGeneration ~= endRoundGeneration then
 				toSafezone(prevCF)
 				return false
-			end
-			local freshMurd = Hub.CoinFarm.GetMurdererRoot(hrp.Position)
-			if freshMurd and (freshMurd.Position - hrp.Position).Magnitude > 0.5 then
-				hrp.CFrame = CFrame.lookAt(hrp.Position, freshMurd.Position)
 			end
 		else
 			shootOpts.mode = "Behind Walls"
@@ -8257,55 +8253,6 @@ do
 			end
 
 			WindUI:Notify({ Title = "Crosshair Updated", Content = v9, Icon = "check", Duration = 2 })
-		end)
-	end
-
-	Hub.Spinbot.RestoreHumanoid = function()
-		local spinbot = Hub.Spinbot
-
-		if spinbot.humanoid and spinbot.humanoid.Parent and spinbot.originalAutoRotate ~= nil then
-			spinbot.humanoid.AutoRotate = spinbot.originalAutoRotate
-		end
-
-		spinbot.humanoid = nil
-		spinbot.originalAutoRotate = nil
-	end
-
-	Hub.Spinbot.SetEnabled = function(arg)
-		local spinbot = Hub.Spinbot
-		spinbot.enabled = arg and true or false
-
-		if spinbot.connection then
-			spinbot.connection:Disconnect()
-			spinbot.connection = nil
-		end
-
-		Hub.Spinbot.RestoreHumanoid()
-		if not spinbot.enabled then
-			return
-		end
-
-		spinbot.connection = RunService.Heartbeat:Connect(function(deltaTime)
-			if not spinbot.enabled then
-				return
-			end
-			local character_ = localPlayer.Character
-			local humanoid = character_ and character_:FindFirstChildOfClass("Humanoid")
-			character_ = character_ and character_:FindFirstChild("HumanoidRootPart")
-			if not humanoid or not character_ or humanoid.Health <= 0 then
-				return
-			end
-
-			if spinbot.humanoid ~= humanoid then
-				Hub.Spinbot.RestoreHumanoid()
-				spinbot.humanoid = humanoid
-				spinbot.originalAutoRotate = humanoid.AutoRotate
-				humanoid.AutoRotate = false
-			elseif humanoid.AutoRotate then
-				humanoid.AutoRotate = false
-			end
-
-			character_.CFrame = character_.CFrame * CFrame.Angles(0, math.rad(spinbot.speed * 1440 * deltaTime), 0)
 		end)
 	end
 
@@ -17324,8 +17271,10 @@ do
 		pcall(function()
 			humanoidRootPart.AssemblyLinearVelocity = Vector3.zero
 			humanoidRootPart.AssemblyAngularVelocity = Vector3.zero
-			character_:PivotTo(cFrame)
-			humanoidRootPart.CFrame = cFrame
+			local rotationOnly = humanoidRootPart.CFrame.Rotation
+			local positionOnly = CFrame.new(cFrame.Position) * rotationOnly
+			character_:PivotTo(positionOnly)
+			humanoidRootPart.CFrame = positionOnly
 		end)
 
 		WindUI:Notify({
@@ -18472,25 +18421,6 @@ do
 		Desc = "Automatically unfreezes after 15 seconds",
 		Callback = function()
 			fn55("Sheriff")
-		end,
-	})
-
-	Tabs.Player:Toggle({
-		Title = "Spinbot",
-		Flag = "Misc_Spinbot",
-		Default = false,
-		Callback = function(arg)
-			Hub.Spinbot.SetEnabled(arg)
-		end,
-	})
-
-	Tabs.Player:Slider({
-		Title = "Spin Speed",
-		Flag = "Misc_SpinbotSpeed",
-		Value = { Min = 1, Max = 3, Default = Hub.Spinbot.speed },
-		Step = 1,
-		Callback = function(arg)
-			Hub.Spinbot.speed = math.clamp(tonumber(arg) or 1, 1, 3)
 		end,
 	})
 
