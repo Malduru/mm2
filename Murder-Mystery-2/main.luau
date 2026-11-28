@@ -1209,15 +1209,18 @@ do
 			end
 
 			local targetPlayer = roleLookup(roleName)
-			if not targetPlayer or targetPlayer.Parent ~= Players then
+			if not targetPlayer then
 				error(roleName == "Murderer" and "ESP katili henüz tespit edemedi." or "ESP şerifi henüz tespit edemedi.")
 			end
 
+			-- Send the detected player's name directly; do not block on a
+			-- separate Players-parent validation.
+			local playerName = targetPlayer.Name
 			local textChatService = game:GetService("TextChatService")
 			local channels = textChatService:FindFirstChild("TextChannels")
 			local channel = channels and (channels:FindFirstChild("RBXGeneral") or channels:FindFirstChildWhichIsA("TextChannel"))
 			if not channel then error("Sohbet kanalı bulunamadı.") end
-			channel:SendAsync(targetPlayer.Name)
+			channel:SendAsync(playerName)
 		end)
 
 		WindUI:Notify({
