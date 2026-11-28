@@ -1199,25 +1199,70 @@ do
 	})
 
 
+	local function sendRoundRoleToChat(roleName)
+		local ok, err = pcall(function()
+			if Hub.RoleState and type(Hub.RoleState.Sync) == "function" then
+				pcall(Hub.RoleState.Sync, false)
+			end
+
+			local targetPlayer = nil
+			local cache = Hub.RoleState and Hub.RoleState.cache
+			if type(cache) == "table" then
+				for _, player in ipairs(Players:GetPlayers()) do
+					local entry = cache[player.Name] or cache[tostring(player.UserId)] or cache[player.UserId]
+					if type(entry) == "table" and entry.Role == roleName then
+						targetPlayer = player
+							break
+					end
+				end
+			end
+
+			if not targetPlayer then
+				for _, player in ipairs(Players:GetPlayers()) do
+					local character = player.Character
+					local backpack = player:FindFirstChildOfClass("Backpack")
+					local toolName = roleName == "Murderer" and "Knife" or "Gun"
+					if (character and character:FindFirstChild(toolName)) or (backpack and backpack:FindFirstChild(toolName)) then
+						targetPlayer = player
+						break
+					end
+				end
+			end
+
+			if not targetPlayer then
+				error(roleName == "Murderer" and "Katil bulunamadı. Tur başlamış ve roller yüklenmiş olmalı." or "Şerif bulunamadı. Tur başlamış ve roller yüklenmiş olmalı.")
+			end
+
+			local textChatService = game:GetService("TextChatService")
+			local channels = textChatService:FindFirstChild("TextChannels")
+			local channel = channels and (channels:FindFirstChild("RBXGeneral") or channels:FindFirstChildWhichIsA("TextChannel"))
+			if not channel then
+				error("Sohbet kanalı bulunamadı.")
+			end
+			channel:SendAsync(targetPlayer.Name)
+		end)
+
+		WindUI:Notify({
+			Title = "Krom",
+			Content = ok and (roleName == "Murderer" and "Katilin ismi sohbete gönderildi." or "Şerifin ismi sohbete gönderildi.") or ("Gönderilemedi: " .. tostring(err)),
+			Icon = ok and "check" or "alert-circle",
+			Duration = 3,
+		})
+	end
+
 	Tabs.Krom:Button({
-		Title = "Mesaj Gönder",
+		Title = "Katilin İsmini Chate Gönder",
 		Icon = "send",
 		Callback = function()
-			local ok, err = pcall(function()
-				local textChatService = game:GetService("TextChatService")
-				local channels = textChatService:FindFirstChild("TextChannels")
-				local channel = channels and (channels:FindFirstChild("RBXGeneral") or channels:FindFirstChildWhichIsA("TextChannel"))
-				if not channel then
-					error("Sohbet kanalı bulunamadı.")
-				end
-				channel:SendAsync("memetfaki2 babamız")
-			end)
-			WindUI:Notify({
-				Title = "Krom",
-				Content = ok and "Mesaj gönderildi." or ("Mesaj gönderilemedi: " .. tostring(err)),
-				Icon = ok and "check" or "alert-circle",
-				Duration = 3,
-			})
+			sendRoundRoleToChat("Murderer")
+		end,
+	})
+
+	Tabs.Krom:Button({
+		Title = "Şerifin İsmini Chate Gönder",
+		Icon = "send",
+		Callback = function()
+			sendRoundRoleToChat("Sheriff")
 		end,
 	})
 
