@@ -1869,7 +1869,6 @@ Hub.TouchButtons = {
 		Aimlock = "target",
 		["Get Gun"] = "hand",
 		["Bomb Jump"] = "bomb",
-		["Wall Glitch"] = "brick-wall",
 		["Throw Knife"] = "slice",
 		Shoot = "crosshair",
 		["Auto Shoot"] = "crosshair",
@@ -1882,7 +1881,6 @@ Hub.TouchButtons = {
 		Aimlock = "aimlock.png",
 		["Get Gun"] = "get-gun.png",
 		["Bomb Jump"] = "bomb-jump.png",
-		["Wall Glitch"] = "wall-glitch.png",
 		["Throw Knife"] = "throw-knife.png",
 		Shoot = "shoot.png",
 		["Auto Shoot"] = "shoot.png",
@@ -13617,25 +13615,6 @@ local function fn37()
 		return v18
 	end
 
-	Hub.TouchButtons.ToggleWallPhaseButton = function(arg)
-		local wallPhaseButtonState = Hub.WallPhaseButtonState
-		wallPhaseButtonState.enabled = arg and true or false
-
-		if wallPhaseButtonState.enabled then
-			Hub.TouchButtons.Create(wallPhaseButtonState, "Foxname_MM2_WallPhaseButton", "WallPhaseButton", "Wall Glitch", function()
-				return false
-			end, function()
-				local wallPhaseAssist = Hub.WallPhaseAssist
-
-				if wallPhaseAssist and type(wallPhaseAssist.Run) == "function" then
-					wallPhaseAssist.Run()
-				end
-			end, true)
-		else
-			Hub.TouchButtons.Destroy(wallPhaseButtonState)
-		end
-	end
-
 	Hub.WallPhaseAssist = { busy = false }
 	Hub.WallPhaseAssist.Run = function()
 		return false
@@ -18812,7 +18791,7 @@ do
 
 	tbl2.General:Toggle({
 		Title = "Mobile Quick Menu",
-		Desc = "One compact button for Shoot, Throw, Get Gun, Bomb Jump, XRay, Aimlock and Wall Glitch.",
+		Desc = "One compact button for Shoot, Throw, Get Gun, Bomb Jump, XRay and Aimlock.",
 		Flag = "General_MobileQuickMenu",
 		Default = false,
 		Callback = function(arg)
