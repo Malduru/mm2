@@ -2938,7 +2938,7 @@ Hub.CoinFarm.DisableUnder = function()
 		if prevRoot and prevRoot.Parent then
 			prevRoot.AssemblyLinearVelocity = Vector3.zero
 			prevRoot.AssemblyAngularVelocity = Vector3.zero
-			prevRoot.CFrame = CFrame.new(prevRoot.Position)
+			-- Preserve the character's current rotation when CoinFarm cleanup runs.
 		end
 	end
 
@@ -4741,7 +4741,8 @@ Hub.CoinFarm.TeleportToMapSpawn = function(arg)
 	local n2 = v8.Size.Y * 0.5 + character_.Size.Y * 0.5 + 0.15
 	character_.AssemblyLinearVelocity = Vector3.zero
 	character_.AssemblyAngularVelocity = Vector3.zero
-	character_.CFrame = v8.CFrame + Vector3.new(0, n2, 0)
+	local rotation = character_.CFrame.Rotation
+	character_.CFrame = CFrame.new(v8.Position + Vector3.new(0, n2, 0)) * rotation
 	return true
 end
 
@@ -4823,7 +4824,7 @@ Hub.CoinFarm.LeaveUnderSafely = function(arg, arg2)
 	if flag8 and humanoidRootPart and humanoidRootPart.Parent then
 		humanoidRootPart.AssemblyLinearVelocity = Vector3.zero
 		humanoidRootPart.AssemblyAngularVelocity = Vector3.zero
-		humanoidRootPart.CFrame = CFrame.new(humanoidRootPart.Position)
+		-- Keep the current character rotation after safely leaving the under-map position.
 
 		pcall(function()
 			humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
