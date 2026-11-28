@@ -1242,7 +1242,7 @@ do
 				error("Chat channel was not found.")
 			end
 
-			channel:SendAsync("Faki Cheats:\n" .. label .. ": " .. target.Name)
+			channel:SendAsync(label .. ": " .. target.Name)
 		end)
 
 		WindUI:Notify({
@@ -9905,7 +9905,7 @@ do
 						return
 					end
 
-					local message = "Faki Cheats:\nMurderer: " .. murderer.Name .. "\nSheriff: " .. sheriff.Name
+					local message = "Murderer: " .. murderer.Name .. "\nSheriff: " .. sheriff.Name
 					local ok = pcall(function()
 						channel:SendAsync(message)
 					end)
@@ -10227,9 +10227,6 @@ do
 				Hub.RoundState.coinsReady = false
 				Hub.RoundState.startedAt = os.clock()
 				Hub.CoinFarm.OnRoundStarted()
-				if Hub.KromAutoRoleAnnounceEnabled and type(Hub.KromSendRoundRoleAnnouncement) == "function" then
-					Hub.KromSendRoundRoleAnnouncement()
-				end
 				task.defer(updateRoundTimer)
 			end))
 		end
@@ -10240,6 +10237,9 @@ do
 			trackConn(coinsStarted.OnClientEvent:Connect(function(arg)
 				Hub.RoundState.coinsReady = Hub.RoundState.active and type(arg) == "table" and (arg.Coin ~= nil or arg.Candy ~= nil)
 				Hub.CoinFarm.OnCoinsStarted(arg)
+				if Hub.RoundState.active and Hub.KromAutoRoleAnnounceEnabled and type(Hub.KromSendRoundRoleAnnouncement) == "function" then
+					Hub.KromSendRoundRoleAnnouncement()
+				end
 			end))
 		end
 
