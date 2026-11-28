@@ -20560,7 +20560,7 @@ local function fn40()
 
 			if v11 and v11:IsA("BasePart") then
 				if Hub.AimStyle == "Aimlock" then
-					currentCamera.CFrame = CFrame.lookAt(currentCamera.CFrame.Position, v11.Position, Vector3.new(0, 1, 0))
+					-- Automatic camera rotation toward players is disabled.
 				end
 			end
 		else
