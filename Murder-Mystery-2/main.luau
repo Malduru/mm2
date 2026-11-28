@@ -1242,7 +1242,7 @@ do
 				error("Chat channel was not found.")
 			end
 
-			channel:SendAsync("Faki Cheats:\\n" .. label .. ": " .. target.Name)
+			channel:SendAsync("Faki Cheats:\n" .. label .. ": " .. target.Name)
 		end)
 
 		WindUI:Notify({
@@ -9905,7 +9905,7 @@ do
 						return
 					end
 
-					local message = "Faki Cheats:\\nMurderer: " .. murderer.Name .. "\\nSheriff: " .. sheriff.Name
+					local message = "Faki Cheats:\nMurderer: " .. murderer.Name .. "\nSheriff: " .. sheriff.Name
 					local ok = pcall(function()
 						channel:SendAsync(message)
 					end)
