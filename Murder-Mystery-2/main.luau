@@ -1201,13 +1201,14 @@ do
 
 	local function sendRoundRoleToChat(roleName)
 		local ok, err = pcall(function()
-			-- This callback is defined before the ESP role functions, so call the
-			-- bridge exported beside fn30/fn31 after the main Hub initialization.
-			if not Hub or type(Hub.GetESPDetectedRolePlayer) ~= "function" then
+			-- The lookup closure is installed beside fn29, where the ESP role
+			-- functions are in scope. This avoids a mismatched Hub table/scope.
+			local roleLookup = genv.FOXNAME_GET_ESP_ROLE_PLAYER
+			if type(roleLookup) ~= "function" then
 				error("ESP rol sistemi henüz hazır değil. Birkaç saniye sonra tekrar dene.")
 			end
 
-			local targetPlayer = Hub.GetESPDetectedRolePlayer(roleName)
+			local targetPlayer = roleLookup(roleName)
 			if not targetPlayer or targetPlayer.Parent ~= Players then
 				error(roleName == "Murderer" and "ESP katili henüz tespit edemedi." or "ESP şerifi henüz tespit edemedi.")
 			end
@@ -9843,20 +9844,13 @@ do
 	end
 
 
-	-- Krom tab uses this bridge so it invokes the very same ESP role
-	-- detection functions (fn30/fn31), in their original lexical scope.
-	Hub.GetESPDetectedRolePlayer = function(roleName)
+	-- Share fn29 through the executor environment so the earlier Krom
+	-- callbacks can call the exact same lookup as the working Fling buttons.
+	genv.FOXNAME_GET_ESP_ROLE_PLAYER = function(roleName)
 		if roleName ~= "Murderer" and roleName ~= "Sheriff" then
 			return nil
 		end
-
-		-- Match the existing General > Fling Sheriff / Fling Murderer buttons:
-		-- fn29 scans players and selects the one whose fn28 ESP role matches.
-		local targetPlayer = fn29(roleName)
-		if targetPlayer and targetPlayer.Parent == Players then
-			return targetPlayer
-		end
-		return nil
+		return fn29(roleName)
 	end
 
 	Hub.CoinFarm.flingMurderer = function()
