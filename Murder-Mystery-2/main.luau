@@ -1240,7 +1240,7 @@ do
 				error("Sohbet kanalı bulunamadı.")
 			end
 
-			local prefix = "Faki Cheats"
+			local prefix = "Faki Cheats:"
 			local englishLabel = roleName == "Murderer" and "Murderer" or "Sheriff"
 			channel:SendAsync(prefix .. "\n" .. englishLabel .. ": " .. target.Name)
 		end)
