@@ -1199,38 +1199,6 @@ do
 	})
 
 
-	local function sendRoundRoleToChat(roleName)
-		local ok, err = pcall(function()
-			-- The lookup closure is installed beside fn29, where the ESP role
-			-- functions are in scope. This avoids a mismatched Hub table/scope.
-			local roleLookup = genv.FOXNAME_GET_ESP_ROLE_PLAYER
-			if type(roleLookup) ~= "function" then
-				error("ESP rol sistemi henüz hazır değil. Birkaç saniye sonra tekrar dene.")
-			end
-
-			local targetPlayer = roleLookup(roleName)
-			if not targetPlayer then
-				error(roleName == "Murderer" and "ESP katili henüz tespit edemedi." or "ESP şerifi henüz tespit edemedi.")
-			end
-
-			-- Send the detected player's name directly; do not block on a
-			-- separate Players-parent validation.
-			local playerName = targetPlayer.Name
-			local textChatService = game:GetService("TextChatService")
-			local channels = textChatService:FindFirstChild("TextChannels")
-			local channel = channels and (channels:FindFirstChild("RBXGeneral") or channels:FindFirstChildWhichIsA("TextChannel"))
-			if not channel then error("Sohbet kanalı bulunamadı.") end
-			channel:SendAsync(playerName)
-		end)
-
-		WindUI:Notify({
-			Title = "Krom",
-			Content = ok and (roleName == "Murderer" and "ESP'nin bulduğu katilin ismi gönderildi." or "ESP'nin bulduğu şerifin ismi gönderildi.") or ("Gönderilemedi: " .. tostring(err)),
-			Icon = ok and "check" or "alert-circle",
-			Duration = 4,
-		})
-	end
-
 	Tabs.Krom:Button({
 		Title = "Mesaj Gönder",
 		Icon = "send",
@@ -1250,22 +1218,6 @@ do
 				Icon = ok and "check" or "alert-circle",
 				Duration = 3,
 			})
-		end,
-	})
-
-	Tabs.Krom:Button({
-		Title = "Katilin İsmini Chate Gönder",
-		Icon = "send",
-		Callback = function()
-			sendRoundRoleToChat("Murderer")
-		end,
-	})
-
-	Tabs.Krom:Button({
-		Title = "Şerifin İsmini Chate Gönder",
-		Icon = "send",
-		Callback = function()
-			sendRoundRoleToChat("Sheriff")
 		end,
 	})
 
