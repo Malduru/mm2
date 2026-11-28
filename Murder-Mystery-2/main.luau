@@ -13651,7 +13651,6 @@ local function fn37()
 	Hub.WallPhaseAssist = { busy = false, emoteName = "Wall Phase (GLITCH)", maxWallDistance = 3 }
 
 	Hub.WallPhaseAssist.Run = function()
-		return false -- Disabled: prevent Wall Glitch from changing character rotation.
 		local wallPhaseAssist = Hub.WallPhaseAssist
 		if wallPhaseAssist.busy or not foxnameMM2Runtime.alive then
 			return false
