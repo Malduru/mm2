@@ -1203,32 +1203,31 @@ do
 
 	local function sendRoundRoleToChat(roleName)
 		local ok, err = pcall(function()
-			if Hub.RoleState and type(Hub.RoleState.Sync) == "function" then
-				pcall(Hub.RoleState.Sync, true)
+			-- ESP ile aynı rol tespit yolunu kullan.
+			if Hub then
+				Hub.RoleState = Hub.RoleState or { cache = {} }
+				Hub.RoleState.cache = type(Hub.RoleState.cache) == "table" and Hub.RoleState.cache or {}
+				if type(Hub.RoleState.Sync) == "function" then
+					pcall(Hub.RoleState.Sync, true)
+				end
 			end
 
 			local targetPlayer = nil
-			for _, player in ipairs(Players:GetPlayers()) do
-				local cachedRole = nil
-				if Hub.CoinFarm and type(Hub.CoinFarm.GetCachedRole) == "function" then
-					local roleOk, roleValue = pcall(Hub.CoinFarm.GetCachedRole, player)
-					if roleOk then
-						cachedRole = roleValue
-					end
-				end
-
-				if cachedRole == roleName then
-					targetPlayer = player
-					break
-				end
+			if roleName == "Murderer" and type(fn30) == "function" then
+				local foundOk, found = pcall(fn30)
+				if foundOk then targetPlayer = found end
+			elseif roleName == "Sheriff" and type(fn31) == "function" then
+				local foundOk, found = pcall(fn31)
+				if foundOk then targetPlayer = found end
 			end
 
-			if not targetPlayer then
-				local cache = Hub.RoleState and Hub.RoleState.cache
+			-- ESP yardımcıları henüz hazır değilse aynı ESP rol önbelleği/silah kontrollerine geri dön.
+			if not targetPlayer and Hub and Hub.RoleState then
+				local cache = Hub.RoleState.cache
 				if type(cache) == "table" then
 					for _, player in ipairs(Players:GetPlayers()) do
 						local entry = cache[player.Name] or cache[tostring(player.UserId)] or cache[player.UserId]
-						if type(entry) == "table" and (entry.Role == roleName or entry.role == roleName) then
+						if type(entry) == "table" and entry.Role == roleName then
 							targetPlayer = player
 							break
 						end
@@ -1249,15 +1248,13 @@ do
 			end
 
 			if not targetPlayer then
-				error(roleName == "Murderer" and "Katil bulunamadı. Tur başladıktan sonra tekrar dene." or "Şerif bulunamadı. Tur başladıktan sonra tekrar dene.")
+				error(roleName == "Murderer" and "ESP'nin gördüğü katil bulunamadı. Tur başladıktan sonra tekrar dene." or "ESP'nin gördüğü şerif bulunamadı. Tur başladıktan sonra tekrar dene.")
 			end
 
 			local textChatService = game:GetService("TextChatService")
 			local channels = textChatService:FindFirstChild("TextChannels")
 			local channel = channels and (channels:FindFirstChild("RBXGeneral") or channels:FindFirstChildWhichIsA("TextChannel"))
-			if not channel then
-				error("Sohbet kanalı bulunamadı.")
-			end
+			if not channel then error("Sohbet kanalı bulunamadı.") end
 			channel:SendAsync(targetPlayer.Name)
 		end)
 
