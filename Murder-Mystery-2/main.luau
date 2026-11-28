@@ -9885,7 +9885,7 @@ do
 		local generation = Hub.KromAutoRoleAnnounceGeneration
 
 		task.spawn(function()
-			for attempt = 1, 20 do
+			for attempt = 1, 40 do
 				if not Hub.KromAutoRoleAnnounceEnabled
 					or generation ~= Hub.KromAutoRoleAnnounceGeneration
 					then
@@ -9908,7 +9908,7 @@ do
 						return
 					end
 
-					local message = "Murderer: " .. murderer.Name .. "\nSheriff: " .. sheriff.Name
+					local message = "Murderer: " .. murderer.Name .. " | Sheriff: " .. sheriff.Name
 					local ok = pcall(function()
 						channel:SendAsync(message)
 					end)
@@ -10157,16 +10157,6 @@ do
 			if roundTimerPart then
 				v9 = trackConn(roundTimerPart:GetAttributeChangedSignal("Time"):Connect(function()
 					task.defer(updateRoundTimer)
-					local timeLeft = tonumber(roundTimerPart:GetAttribute("Time"))
-					if timeLeft and timeLeft > 0 and timeLeft <= 10
-						and Hub.KromAutoRoleAnnounceEnabled
-						and type(Hub.KromSendRoundRoleAnnouncement) == "function"
-						and Hub.KromAutoRoleAnnounceTimerTriggered ~= true then
-						Hub.KromAutoRoleAnnounceTimerTriggered = true
-						Hub.KromSendRoundRoleAnnouncement()
-					elseif timeLeft and timeLeft <= 0 then
-						Hub.KromAutoRoleAnnounceTimerTriggered = false
-					end
 				end))
 			end
 
@@ -10208,13 +10198,20 @@ do
 				if type(cache) ~= "table" then
 					return
 				end
+				local wasRoundActive = Hub.RoundState.active == true
 				Hub.RoleState.cache = cache
 				local hasPlayers = next(cache) ~= nil
 				if hasPlayers then
 					Hub.RoundState.active = true
+					if not wasRoundActive and Hub.KromAutoRoleAnnounceEnabled
+						and type(Hub.KromSendRoundRoleAnnouncement) == "function" then
+						Hub.KromAutoRoleAnnounceTimerTriggered = true
+						Hub.KromSendRoundRoleAnnouncement()
+					end
 				else
 					Hub.RoundState.active = false
 					Hub.RoundState.coinsReady = false
+					Hub.KromAutoRoleAnnounceTimerTriggered = false
 				end
 				Hub.CoinFarm.OnPlayerDataChanged()
 				Hub.CoinFarm.RefreshStats()
