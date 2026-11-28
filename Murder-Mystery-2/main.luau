@@ -1750,27 +1750,6 @@ Hub.XRayButtonState = {
 	dragging = false,
 }
 
-Hub.WallPhaseButtonState = {
-	enabled = false,
-	size = "Medium",
-	shape = "Square",
-	backgroundColor = Color3.fromRGB(27, 24, 34),
-	outlineColor = Color3.fromRGB(174, 92, 255),
-	textColor = Color3.fromRGB(255, 255, 255),
-	position = UDim2.new(0.84, 0, 0.26, 0),
-	draggable = false,
-	gui = nil,
-	button = nil,
-	beginConn = nil,
-	inputConn = nil,
-	globalConn = nil,
-	endConn = nil,
-	input = nil,
-	start = nil,
-	startPos = nil,
-	dragging = false,
-}
-
 Hub.FlyButtonState = {
 	enabled = false,
 	size = "Medium",
@@ -7661,7 +7640,6 @@ Hub.TouchButtons.ForEachStyledButton = function(arg)
 		Hub.GetGunButtonState,
 		Hub.BombJumpButtonState,
 		Hub.ThrowKnifeButtonState,
-		Hub.WallPhaseButtonState,
 		Hub.FlyButtonState,
 		Hub.NoclipButtonState,
 	}) do
@@ -12917,7 +12895,6 @@ Hub.TouchButtons.PositionQuickMenuActions = function(arg)
 		BombJump = Vector2.new(132 * n2, 48),
 		XRay = Vector2.new(82 * n2, 108),
 		Aimlock = Vector2.new(16 * n2, 138),
-		WallPhase = Vector2.new(-52 * n2, 124),
 	}
 
 	for k, action in pairs(quickMenuState.actions) do
@@ -13098,17 +13075,7 @@ Hub.TouchButtons.ToggleQuickMenu = function(arg)
 				Hub.TouchButtons.SetAimEnabled(not Hub.AimEnabled, true)
 			end,
 		},
-		{
-			"WallPhase",
-			"Wall Glitch",
-			function()
-				local wallPhaseAssist = Hub.WallPhaseAssist
 
-				if wallPhaseAssist and type(wallPhaseAssist.Run) == "function" then
-					wallPhaseAssist.Run()
-				end
-			end,
-		},
 	}) do
 		local textButton2 = Instance.new("TextButton")
 		textButton2.Name = v9[1] .. "QuickAction"
@@ -14399,9 +14366,6 @@ local function fn37()
 		flag7 = false
 		flag8 = false
 
-		if Hub.WallPhaseAssist then
-			Hub.WallPhaseAssist.busy = false
-		end
 
 		if connection then
 			connection:Disconnect()
@@ -18800,7 +18764,7 @@ do
 
 	tbl2.General:Toggle({
 		Title = "Mobile Quick Menu",
-		Desc = "One compact button for Shoot, Throw, Get Gun, Bomb Jump, XRay, Aimlock and Wall Glitch.",
+		Desc = "One compact button for Shoot, Throw, Get Gun, Bomb Jump, XRay and Aimlock.",
 		Flag = "General_MobileQuickMenu",
 		Default = false,
 		Callback = function(arg)
@@ -19400,7 +19364,6 @@ local function fn39()
 			Hub.GetGunButtonState,
 			Hub.BombJumpButtonState,
 			Hub.ThrowKnifeButtonState,
-			Hub.WallPhaseButtonState,
 			Hub.FlyButtonState,
 			Hub.NoclipButtonState,
 			Hub.QuickMenuState,
@@ -19424,7 +19387,6 @@ local function fn39()
 			getGun = fn42(Hub.GetGunButtonState.position),
 			bombJump = fn42(Hub.BombJumpButtonState.position),
 			throwKnife = fn42(Hub.ThrowKnifeButtonState.position),
-			wallPhase = fn42(Hub.WallPhaseButtonState.position),
 			fly = fn42(Hub.FlyButtonState.position),
 			noclip = fn42(Hub.NoclipButtonState.position),
 			quickMenu = fn42(Hub.QuickMenuState.position),
@@ -19611,7 +19573,6 @@ local function fn39()
 		fn48(Hub.GetGunButtonState, flag8.getGun)
 		fn48(Hub.BombJumpButtonState, flag8.bombJump)
 		fn48(Hub.ThrowKnifeButtonState, flag8.throwKnife)
-		fn48(Hub.WallPhaseButtonState, flag8.wallPhase)
 		fn48(Hub.FlyButtonState, flag8.fly)
 		fn48(Hub.NoclipButtonState, flag8.noclip)
 		fn48(Hub.QuickMenuState, flag8.quickMenu)
