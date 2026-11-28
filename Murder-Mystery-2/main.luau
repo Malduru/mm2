@@ -1869,7 +1869,6 @@ Hub.TouchButtons = {
 		Aimlock = "target",
 		["Get Gun"] = "hand",
 		["Bomb Jump"] = "bomb",
-		["Wall Glitch"] = "brick-wall",
 		["Throw Knife"] = "slice",
 		Shoot = "crosshair",
 		["Auto Shoot"] = "crosshair",
@@ -1882,7 +1881,6 @@ Hub.TouchButtons = {
 		Aimlock = "aimlock.png",
 		["Get Gun"] = "get-gun.png",
 		["Bomb Jump"] = "bomb-jump.png",
-		["Wall Glitch"] = "wall-glitch.png",
 		["Throw Knife"] = "throw-knife.png",
 		Shoot = "shoot.png",
 		["Auto Shoot"] = "shoot.png",
@@ -13383,7 +13381,6 @@ local function fn37()
 	local tbl7 = {
 		{ name = "Fake Dead 1", id = 132384701706046 },
 		{ name = "Fake Dead 2", id = 89258194846699 },
-		{ name = "Wall Phase (GLITCH)", id = 79017619155911 },
 	}
 
 	local tbl8 = {}
@@ -13629,257 +13626,6 @@ local function fn37()
 		return v18
 	end
 
-	Hub.TouchButtons.ToggleWallPhaseButton = function(arg)
-		local wallPhaseButtonState = Hub.WallPhaseButtonState
-		wallPhaseButtonState.enabled = arg and true or false
-
-		if wallPhaseButtonState.enabled then
-			Hub.TouchButtons.Create(wallPhaseButtonState, "Foxname_MM2_WallPhaseButton", "WallPhaseButton", "Wall Glitch", function()
-				return false
-			end, function()
-				local wallPhaseAssist = Hub.WallPhaseAssist
-
-				if wallPhaseAssist and type(wallPhaseAssist.Run) == "function" then
-					wallPhaseAssist.Run()
-				end
-			end, true)
-		else
-			Hub.TouchButtons.Destroy(wallPhaseButtonState)
-		end
-	end
-
-	Hub.WallPhaseAssist = { busy = false, emoteName = "Wall Phase (GLITCH)", maxWallDistance = 3 }
-
-	Hub.WallPhaseAssist.Run = function()
-		local wallPhaseAssist = Hub.WallPhaseAssist
-		if wallPhaseAssist.busy or not foxnameMM2Runtime.alive then
-			return false
-		end
-		wallPhaseAssist.busy = true
-		local character_ = localPlayer.Character
-		local humanoid = character_ and character_:FindFirstChildOfClass("Humanoid")
-		local humanoidRootPart = character_ and character_:FindFirstChild("HumanoidRootPart")
-		local currentCamera2 = workspace.CurrentCamera
-
-		if not character_ or not humanoid or humanoid.Health <= 0 or not humanoidRootPart or not currentCamera2 then
-			wallPhaseAssist.busy = false
-
-			WindUI:Notify({
-				Title = "Wall Glitch",
-				Content = "Character or camera is not ready.",
-				Icon = "x",
-				Duration = 2,
-			})
-
-			return false
-		end
-
-		local vector = Vector3.new(currentCamera2.CFrame.LookVector.X, 0, currentCamera2.CFrame.LookVector.Z)
-
-		if vector.Magnitude < 0.01 then
-			vector = Vector3.new(humanoidRootPart.CFrame.LookVector.X, 0, humanoidRootPart.CFrame.LookVector.Z)
-		end
-
-		local unit = vector.Unit
-		local vector2 = Vector3.new(humanoidRootPart.CFrame.LookVector.X, 0, humanoidRootPart.CFrame.LookVector.Z)
-		local unit2 = vector2.Magnitude > 0.01 and vector2.Unit or unit
-		local tbl16 = {}
-		local v16 = unit:Cross(Vector3.new(0, 1, 0))
-		local n3 = -unit:Cross(Vector3.new(0, 1, 0))
-		tbl16[1] = -unit
-		tbl16[2] = -unit2
-		tbl16[3] = unit
-		tbl16[4] = unit2
-		tbl16[5] = v16
-		tbl16[6] = n3
-		local raycastParams = RaycastParams.new()
-		raycastParams.FilterType = Enum.RaycastFilterType.Exclude
-		raycastParams.FilterDescendantsInstances = { character_ }
-		raycastParams.IgnoreWater = true
-		local hit = nil
-
-		for _, v17 in ipairs(tbl16) do
-			hit = workspace:Raycast(humanoidRootPart.Position, v17.Unit * wallPhaseAssist.maxWallDistance, raycastParams)
-			if not (hit and hit.Instance and hit.Instance:IsA("BasePart") and hit.Instance.CanCollide and math.abs(hit.Normal.Y) < 0.45) then
-				hit = nil
-				continue
-			end
-			break
-		end
-
-		if not hit then
-			wallPhaseAssist.busy = false
-
-			WindUI:Notify({
-				Title = "Wall Glitch",
-				Content = "No wall found nearby. Stand within 3 studs.",
-				Icon = "scan-search",
-				Duration = 3,
-			})
-
-			return false
-		end
-
-		local n4 = humanoidRootPart.Position + Vector3.new(0, 1.5, 0)
-		local n5 = currentCamera2.CFrame.Position - n4
-
-		if Vector3.new(n5.X, 0, n5.Z).Magnitude < 0.5 then
-			n5 = Vector3.new(0, 2, 8)
-		end
-
-		local vector3 = Vector3.new(-n5.X, n5.Y, -n5.Z)
-		local cameraType = currentCamera2.CameraType
-		currentCamera2.CameraType = Enum.CameraType.Scriptable
-		currentCamera2.CFrame = CFrame.lookAt(n4 + vector3, n4, Vector3.new(0, 1, 0))
-		RunService.RenderStepped:Wait()
-
-		local ok, result, result2 = pcall(function()
-			return humanoid:PlayEmoteAndGetAnimTrackById(79017619155911)
-		end)
-
-		local isAnimationTrack = typeof(result) == "Instance" and result:IsA("AnimationTrack") and result
-		local isAnimationTrack2
-
-		if isAnimationTrack then
-			isAnimationTrack2 = isAnimationTrack
-		else
-			isAnimationTrack2 = result == true and typeof(result2) == "Instance" and result2:IsA("AnimationTrack") and result2 or nil
-		end
-
-		local flag9
-
-		if ok then
-			flag9 = result == true or isAnimationTrack2 ~= nil
-		else
-			flag9 = ok
-		end
-
-		if not flag9 then
-			currentCamera2.CameraType = cameraType
-			wallPhaseAssist.busy = false
-
-			WindUI:Notify({
-				Title = "Wall Glitch",
-				Content = "The emote failed to start. Do not move or respawn and try again.",
-				Icon = "x",
-				Duration = 3,
-			})
-
-			return false
-		end
-
-		if isAnimationTrack2 then
-			v9 = isAnimationTrack2
-
-			pcall(function()
-				isAnimationTrack2:AdjustSpeed(n2)
-			end)
-		end
-
-		task.wait(0.5)
-		currentCamera2.CameraType = cameraType
-		RunService.RenderStepped:Wait()
-		local flag10 = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
-		local ok2, result3 = pcall(game.GetService, game, "VirtualInputManager")
-
-		if not ok2 then
-			result3 = nil
-		end
-
-		local ok3
-
-		if flag10 then
-			local playerGui = localPlayer:FindFirstChildOfClass("PlayerGui")
-			local v17 = nil
-
-			if playerGui then
-				for _, descendant in ipairs(playerGui:GetDescendants()) do
-					if descendant:IsA("GuiButton") then
-						local v18 = string.lower(tostring(descendant.Name) .. " " .. tostring(descendant:IsA("TextButton") and descendant.Text or "") .. " " .. tostring(descendant:GetAttribute("Action") or ""))
-						if v18:find("shiftlock", 1, true) or v18:find("shift lock", 1, true) or v18:find("mouselock", 1, true) or v18:find("mouse lock", 1, true) then
-							v17 = descendant
-							break
-						end
-					end
-				end
-			end
-
-			if v17 and type(firesignal) == "function" then
-				ok3 = pcall(function()
-					firesignal(v17.Activated)
-				end)
-			else
-				local v18 = v17 and result3
-				ok3 = false
-
-				if v18 then
-					local n6 = v17.AbsolutePosition + v17.AbsoluteSize / 2
-
-					ok3 = pcall(function()
-						result3:SendMouseButtonEvent(n6.X, n6.Y, 0, true, game, 0)
-						RunService.RenderStepped:Wait()
-						result3:SendMouseButtonEvent(n6.X, n6.Y, 0, false, game, 0)
-					end)
-				end
-			end
-		else
-			ok3 = false
-
-			if result3 then
-				ok3 = pcall(function()
-					result3:SendKeyEvent(true, Enum.KeyCode.LeftShift, false, game)
-					RunService.RenderStepped:Wait()
-					result3:SendKeyEvent(false, Enum.KeyCode.LeftShift, false, game)
-				end)
-			end
-		end
-
-		if ok3 then
-			RunService.RenderStepped:Wait()
-
-			pcall(function()
-				local cameraRelative = Enum.RotationType.CameraRelative
-				UserSettings():GetService("UserGameSettings").RotationType = cameraRelative
-			end)
-
-			pcall(function()
-				UserInputService.MouseBehavior = Enum.MouseBehavior.LockCenter
-			end)
-		end
-
-		local flag11
-
-		if not ok3 then
-			local lookVector = currentCamera2.CFrame.LookVector
-			local vector4 = Vector3.new(lookVector.X, 0, lookVector.Z)
-
-			if vector4.Magnitude > 0.01 then
-				humanoidRootPart.AssemblyAngularVelocity = Vector3.zero
-				humanoidRootPart.CFrame = CFrame.lookAt(humanoidRootPart.Position, humanoidRootPart.Position + vector4.Unit, Vector3.new(0, 1, 0))
-				flag11 = true
-			else
-				flag11 = ok3
-			end
-		else
-			flag11 = ok3
-		end
-
-		wallPhaseAssist.busy = false
-
-		if not flag11 then
-			WindUI:Notify({
-				Title = "Wall Glitch",
-				Content = "Emote started, but Shift Lock or character rotation failed.",
-				Icon = "triangle-alert",
-				Duration = 3,
-			})
-
-			return false
-		end
-
-		WindUI:Notify({ Title = "Wall Glitch", Content = "Success!", Icon = "door-open", Duration = 3 })
-		return true
-	end
 
 	local function fn45()
 		local character_ = localPlayer.Character
@@ -14727,7 +14473,7 @@ local function fn37()
 
 	Tabs.Anims:Dropdown({
 		Title = "Ready Animations",
-		Values = { "Fake Dead 1", "Fake Dead 2", "Wall Glitch (GLITCH)" },
+		Values = { "Fake Dead 1", "Fake Dead 2" },
 		Value = name,
 		AllowNone = false,
 		Callback = function(arg)
@@ -14801,67 +14547,6 @@ local function fn37()
 		end
 	end
 
-	tbl2.General:Keybind({
-		Title = "Wall Glitch Keybind",
-		Flag = "Anims_WallPhaseKeybind",
-		Value = "G",
-		Callback = function()
-			Hub.WallPhaseAssist.Run()
-		end,
-	})
-
-	tbl2.General:Toggle({
-		Title = "Wall Glitch Button",
-		Flag = "Anims_WallPhaseButton",
-		Default = false,
-		Callback = function(arg)
-			Hub.TouchButtons.ToggleWallPhaseButton(arg)
-		end,
-	})
-
-	tbl2.General:Dropdown({
-		Title = "Wall Glitch Button Size",
-		Flag = "Anims_WallPhaseButtonSize",
-		Values = { "Small", "Medium", "Large" },
-		Value = Hub.WallPhaseButtonState.size,
-		Callback = function(size)
-			if Hub.TouchButtons.Sizes[size] then
-				Hub.WallPhaseButtonState.size = size
-				Hub.TouchButtons.ApplySize(Hub.WallPhaseButtonState.button, size, Hub.WallPhaseButtonState.shape)
-			end
-		end,
-	})
-
-	tbl2.General:Dropdown({
-		Title = "Wall Glitch Button Shape",
-		Flag = "Anims_WallPhaseButtonShape",
-		Values = { "Square", "Rectangle" },
-		Value = Hub.WallPhaseButtonState.shape,
-		Callback = function(arg)
-			Hub.WallPhaseButtonState.shape = arg == "Rectangle" and "Rectangle" or "Square"
-			Hub.TouchButtons.ApplySize(Hub.WallPhaseButtonState.button, Hub.WallPhaseButtonState.size, Hub.WallPhaseButtonState.shape)
-			Hub.TouchButtons.UpdateHoldHint(Hub.WallPhaseButtonState, Hub.WallPhaseButtonState.button)
-		end,
-	})
-
-	tbl2.General:Colorpicker({
-		Title = "Wall Glitch Icon Color",
-		Flag = "Anims_WallPhaseButtonColor",
-		Default = Hub.WallPhaseButtonState.outlineColor,
-		Callback = function(outlineColor)
-			Hub.WallPhaseButtonState.outlineColor = outlineColor
-			Hub.TouchButtons.ApplyAppearance(Hub.WallPhaseButtonState.button, Hub.WallPhaseButtonState)
-		end,
-	})
-
-	tbl2.General:Toggle({
-		Title = "Wall Glitch Button Draggable",
-		Flag = "Anims_WallPhaseButtonDraggable",
-		Default = Hub.WallPhaseButtonState.draggable,
-		Callback = function(arg)
-			Hub.WallPhaseButtonState.draggable = arg and true or false
-		end,
-	})
 
 	budgetYield()
 
