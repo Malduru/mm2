@@ -10198,16 +10198,10 @@ do
 				if type(cache) ~= "table" then
 					return
 				end
-				local wasRoundActive = Hub.RoundState.active == true
 				Hub.RoleState.cache = cache
 				local hasPlayers = next(cache) ~= nil
 				if hasPlayers then
 					Hub.RoundState.active = true
-					if not wasRoundActive and Hub.KromAutoRoleAnnounceEnabled
-						and type(Hub.KromSendRoundRoleAnnouncement) == "function" then
-						Hub.KromAutoRoleAnnounceTimerTriggered = true
-						Hub.KromSendRoundRoleAnnouncement()
-					end
 				else
 					Hub.RoundState.active = false
 					Hub.RoundState.coinsReady = false
@@ -10236,6 +10230,7 @@ do
 				Hub.RoundState.active = true
 				Hub.RoundState.coinsReady = false
 				Hub.RoundState.startedAt = os.clock()
+				Hub.KromAutoRoleAnnounceTimerTriggered = false
 				Hub.CoinFarm.OnRoundStarted()
 				task.defer(updateRoundTimer)
 			end))
@@ -10247,6 +10242,12 @@ do
 			trackConn(coinsStarted.OnClientEvent:Connect(function(arg)
 				Hub.RoundState.coinsReady = Hub.RoundState.active and type(arg) == "table" and (arg.Coin ~= nil or arg.Candy ~= nil)
 				Hub.CoinFarm.OnCoinsStarted(arg)
+				if Hub.RoundState.active and Hub.KromAutoRoleAnnounceEnabled
+					and Hub.KromAutoRoleAnnounceTimerTriggered ~= true
+					and type(Hub.KromSendRoundRoleAnnouncement) == "function" then
+					Hub.KromAutoRoleAnnounceTimerTriggered = true
+					Hub.KromSendRoundRoleAnnouncement()
+				end
 			end))
 		end
 
