@@ -9846,54 +9846,18 @@ do
 	-- Krom tab uses this bridge so it invokes the very same ESP role
 	-- detection functions (fn30/fn31), in their original lexical scope.
 	Hub.GetESPDetectedRolePlayer = function(roleName)
-		if roleName ~= "Murderer" and roleName ~= "Sheriff" then
-			return nil
-		end
-
-		-- Refresh round data before running the same detectors used by ESP.
-		if Hub.RoleState and type(Hub.RoleState.Sync) == "function" then
-			pcall(Hub.RoleState.Sync, true)
-		end
-
-		local targetPlayer
 		if roleName == "Murderer" then
-			targetPlayer = fn30()
-		else
-			targetPlayer = fn31()
+			-- Same target selection used by CoinFarm.flingMurderer.
+			local targetPlayer = fn30()
+			return targetPlayer and targetPlayer.Parent == Players and targetPlayer or nil
+		elseif roleName == "Sheriff" then
+			-- Sheriff fling first resolves its target through getSheriffFlingTarget,
+			-- which checks live RoleState data and then falls back to fn31().
+			local getter = Hub.CoinFarm and Hub.CoinFarm.getSheriffFlingTarget
+			local targetPlayer = type(getter) == "function" and getter() or nil
+			return targetPlayer and targetPlayer.Parent == Players and targetPlayer or nil
 		end
-
-		-- ESP's nametag/color path also checks RoleState.cache. Mirror that
-		-- fallback when tool/GunDrop detection does not return a player.
-		if not targetPlayer and type(Hub.RoleState.cache) == "table" then
-			for _, player in ipairs(Players:GetPlayers()) do
-				if fn26(player) then
-					local entry = Hub.RoleState.cache[player.Name]
-						or Hub.RoleState.cache[tostring(player.UserId)]
-						or Hub.RoleState.cache[player.UserId]
-					if type(entry) == "table" and entry.Dead ~= true then
-						if roleName == "Murderer" and (entry.Role == "Murderer" or entry.Role == "Zombie") then
-							targetPlayer = player
-							break
-						elseif roleName == "Sheriff" and entry.Role == "Sheriff" then
-							targetPlayer = player
-							break
-						end
-					end
-				end
-			end
-		end
-
-		-- Keep the ESP render cache in sync with the player selected by its
-		-- own role detectors so the chat buttons and ESP agree.
-		if type(Hub.ESPRenderCache) == "table" then
-			if roleName == "Murderer" then
-				Hub.ESPRenderCache.murderer = targetPlayer
-			else
-				Hub.ESPRenderCache.sheriff = targetPlayer
-			end
-		end
-
-		return targetPlayer
+		return nil
 	end
 
 	Hub.CoinFarm.flingMurderer = function()
