@@ -1221,6 +1221,52 @@ do
 		end,
 	})
 
+	local function kromSendRoleName(roleName, label)
+		local ok, err = pcall(function()
+			local getter = genv.FOXNAME_GET_ESP_ROLE_PLAYER
+			if type(getter) ~= "function" then
+				error("Rol sistemi henüz hazır değil.")
+			end
+
+			local target = getter(roleName)
+			if not target then
+				error(label .. " bulunamadı.")
+			end
+
+			local textChatService = game:GetService("TextChatService")
+			local channels = textChatService:FindFirstChild("TextChannels")
+			local channel = channels and (channels:FindFirstChild("RBXGeneral") or channels:FindFirstChildWhichIsA("TextChannel"))
+			if not channel then
+				error("Sohbet kanalı bulunamadı.")
+			end
+
+			channel:SendAsync(label .. ": " .. target.Name)
+		end)
+
+		WindUI:Notify({
+			Title = "Krom",
+			Content = ok and (label .. " ismi sohbete gönderildi.") or ("Gönderilemedi: " .. tostring(err)),
+			Icon = ok and "check" or "alert-circle",
+			Duration = 3,
+		})
+	end
+
+	Tabs.Krom:Button({
+		Title = "Şerif İsmini Gönder",
+		Icon = "shield",
+		Callback = function()
+			kromSendRoleName("Sheriff", "Şerif")
+		end,
+	})
+
+	Tabs.Krom:Button({
+		Title = "Katil İsmini Gönder",
+		Icon = "skull",
+		Callback = function()
+			kromSendRoleName("Murderer", "Katil")
+		end,
+	})
+
 	budgetYield()
 
 	local str5 = tostring(genv.FOXNAME_COMPATIBILITY_REPORT_ENDPOINT or "")
