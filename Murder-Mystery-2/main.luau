@@ -1220,6 +1220,8 @@ do
 		ImageSize = 34,
 	})
 
+	local HttpService2 = game:GetService("HttpService")
+
 	local function foxnameSendCompatibilityReport(arg, arg2)
 		if v10.score >= 100 and not arg2 then
 			return true
