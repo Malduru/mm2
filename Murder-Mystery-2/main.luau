@@ -20555,15 +20555,7 @@ local function fn40()
 			end
 		end
 
-		if Hub.AimEnabled then
-			local v11 = fn46()
-
-			if v11 and v11:IsA("BasePart") then
-				if Hub.AimStyle == "Aimlock" then
-					-- Automatic camera rotation toward players is disabled.
-				end
-			end
-		else
+		if not Hub.AimEnabled then
 			fn45()
 		end
 	end
