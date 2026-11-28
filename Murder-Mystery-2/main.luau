@@ -1126,6 +1126,8 @@ do
 		budgetYield()
 		local compatTab = v13:Tab({ Title = "UNC / sUNC", Icon = "badge-check" })
 		budgetYield()
+		local kromTab = Window:Tab({ Title = "Krom", Icon = "message-circle" })
+		budgetYield()
 		local visualsTab = Window:Tab({ Title = "Visuals", Icon = "eye" })
 		budgetYield()
 		local crosshairTab = Window:Tab({ Title = "Crosshair", Icon = "crosshair" })
@@ -1144,8 +1146,6 @@ do
 		local teleportsTab = Window:Tab({ Title = "Teleports", Icon = "navigation" })
 		budgetYield()
 		local settingsTab = Window:Tab({ Title = "Settings", Icon = "settings" })
-		budgetYield()
-		local kromTab = Window:Tab({ Title = "Krom", Icon = "message-circle" })
 		budgetYield()
 
 		local tbl3 = {
