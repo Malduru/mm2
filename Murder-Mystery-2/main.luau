@@ -1240,9 +1240,9 @@ do
 				error("Sohbet kanalı bulunamadı.")
 			end
 
-			local prefix = "faki cheats "
+			local prefix = "Faki Cheats"
 			local englishLabel = roleName == "Murderer" and "Murderer" or "Sheriff"
-			channel:SendAsync(prefix .. englishLabel .. ": " .. target.Name)
+			channel:SendAsync(prefix .. "\n" .. englishLabel .. ": " .. target.Name)
 		end)
 
 		WindUI:Notify({
