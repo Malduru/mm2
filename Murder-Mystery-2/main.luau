@@ -1240,9 +1240,8 @@ do
 				error("Sohbet kanalı bulunamadı.")
 			end
 
-			local prefix = "Faki Cheats:"
-			local englishLabel = roleName == "Murderer" and "Murderer" or "Sheriff"
-			channel:SendAsync(prefix .. "\n" .. englishLabel .. ": " .. target.Name)
+			local prefix = roleName == "Murderer" and "faki cheats " or ""
+			channel:SendAsync(prefix .. label .. ": " .. target.Name)
 		end)
 
 		WindUI:Notify({
@@ -1266,16 +1265,6 @@ do
 		Icon = "skull",
 		Callback = function()
 			kromSendRoleName("Murderer", "Katil")
-		end,
-	})
-
-	Hub.KromAutoRoleAnnounceControl = Tabs.Krom:Toggle({
-		Title = "Auto Round Role Announcement",
-		Desc = "At each round start, send the Murderer and Sheriff names once.",
-		Flag = "Krom_AutoRoundRoleAnnouncement",
-		Default = false,
-		Callback = function(value)
-			Hub.KromAutoRoleAnnounceEnabled = value == true
 		end,
 	})
 
@@ -1492,7 +1481,6 @@ trackConn = function(arg)
 end
 
 Hub = {
-	KromAutoRoleAnnounceEnabled = false,
 	PlayerESP = false,
 	PlayerESPStyle = "Filled",
 	LineESP = false,
@@ -9868,55 +9856,6 @@ do
 		return fn29(roleName)
 	end
 
-	Hub.KromAutoRoleAnnounceGeneration = 0
-	Hub.KromAutoRoleAnnounceSentGeneration = nil
-	Hub.KromSendRoundRoleAnnouncement = function()
-		if not Hub.KromAutoRoleAnnounceEnabled then
-			return
-		end
-
-		Hub.KromAutoRoleAnnounceGeneration = Hub.KromAutoRoleAnnounceGeneration + 1
-		local generation = Hub.KromAutoRoleAnnounceGeneration
-
-		task.spawn(function()
-			for attempt = 1, 16 do
-				if not Hub.KromAutoRoleAnnounceEnabled
-					or generation ~= Hub.KromAutoRoleAnnounceGeneration
-					or not Hub.RoundState.active then
-					return
-				end
-
-				local getter = genv.FOXNAME_GET_ESP_ROLE_PLAYER
-				local murderer = type(getter) == "function" and getter("Murderer") or nil
-				local sheriff = type(getter) == "function" and getter("Sheriff") or nil
-
-				if murderer and murderer.Parent and sheriff and sheriff.Parent then
-					if Hub.KromAutoRoleAnnounceSentGeneration == generation then
-						return
-					end
-
-					local textChatService = game:GetService("TextChatService")
-					local channels = textChatService:FindFirstChild("TextChannels")
-					local channel = channels and (channels:FindFirstChild("RBXGeneral") or channels:FindFirstChildWhichIsA("TextChannel"))
-					if not channel then
-						return
-					end
-
-					local message = "Faki Cheats:\nMurderer: " .. murderer.Name .. "\nSheriff: " .. sheriff.Name
-					local ok = pcall(function()
-						channel:SendAsync(message)
-					end)
-					if ok then
-						Hub.KromAutoRoleAnnounceSentGeneration = generation
-					end
-					return
-				end
-
-				task.wait(0.5)
-			end
-		end)
-	end
-
 	Hub.CoinFarm.flingMurderer = function()
 		local v9 = fn30()
 		if not v9 or v9 == localPlayer then
@@ -10224,9 +10163,6 @@ do
 				Hub.RoundState.coinsReady = false
 				Hub.RoundState.startedAt = os.clock()
 				Hub.CoinFarm.OnRoundStarted()
-				if Hub.KromAutoRoleAnnounceEnabled and type(Hub.KromSendRoundRoleAnnouncement) == "function" then
-					Hub.KromSendRoundRoleAnnouncement()
-				end
 				task.defer(updateRoundTimer)
 			end))
 		end
