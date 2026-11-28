@@ -9846,16 +9846,15 @@ do
 	-- Krom tab uses this bridge so it invokes the very same ESP role
 	-- detection functions (fn30/fn31), in their original lexical scope.
 	Hub.GetESPDetectedRolePlayer = function(roleName)
-		if roleName == "Murderer" then
-			-- Same target selection used by CoinFarm.flingMurderer.
-			local targetPlayer = fn30()
-			return targetPlayer and targetPlayer.Parent == Players and targetPlayer or nil
-		elseif roleName == "Sheriff" then
-			-- Sheriff fling first resolves its target through getSheriffFlingTarget,
-			-- which checks live RoleState data and then falls back to fn31().
-			local getter = Hub.CoinFarm and Hub.CoinFarm.getSheriffFlingTarget
-			local targetPlayer = type(getter) == "function" and getter() or nil
-			return targetPlayer and targetPlayer.Parent == Players and targetPlayer or nil
+		if roleName ~= "Murderer" and roleName ~= "Sheriff" then
+			return nil
+		end
+
+		-- Match the existing General > Fling Sheriff / Fling Murderer buttons:
+		-- fn29 scans players and selects the one whose fn28 ESP role matches.
+		local targetPlayer = fn29(roleName)
+		if targetPlayer and targetPlayer.Parent == Players then
+			return targetPlayer
 		end
 		return nil
 	end
