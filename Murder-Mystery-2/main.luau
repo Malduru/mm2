@@ -1306,10 +1306,24 @@ do
 		end
 
 		task.spawn(function()
+			-- These callbacks are assigned later in the script; wait until initialization finishes.
+			for i = 1, 80 do
+				if type(fn23) == "function" and type(fn24) == "function" then
+					break
+				end
+				task.wait(0.25)
+			end
+
+			if type(fn23) ~= "function" or type(fn24) ~= "function" then
+				warn("[Compatibility] Safezone/GunDrop callbacks were not initialized in time")
+				return
+			end
+
 			local v12 = nil
 
 			for i = 1, 8 do
-				v12 = fn23()
+				local ok, result = pcall(fn23)
+				v12 = ok and result or nil
 				if not v12 then
 					task.wait(1.5)
 					continue
@@ -1317,7 +1331,7 @@ do
 				break
 			end
 
-			fn24(v12, false)
+			pcall(fn24, v12, false)
 		end)
 	end)
 
