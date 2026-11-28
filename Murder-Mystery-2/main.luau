@@ -1251,6 +1251,28 @@ do
 	end
 
 	Tabs.Krom:Button({
+		Title = "Mesaj Gönder",
+		Icon = "send",
+		Callback = function()
+			local ok, err = pcall(function()
+				local textChatService = game:GetService("TextChatService")
+				local channels = textChatService:FindFirstChild("TextChannels")
+				local channel = channels and (channels:FindFirstChild("RBXGeneral") or channels:FindFirstChildWhichIsA("TextChannel"))
+				if not channel then
+					error("Sohbet kanalı bulunamadı.")
+				end
+				channel:SendAsync("memetfaki2 babamız")
+			end)
+			WindUI:Notify({
+				Title = "Krom",
+				Content = ok and "Mesaj sohbete gönderildi." or ("Gönderilemedi: " .. tostring(err)),
+				Icon = ok and "check" or "alert-circle",
+				Duration = 3,
+			})
+		end,
+	})
+
+	Tabs.Krom:Button({
 		Title = "Katilin İsmini Chate Gönder",
 		Icon = "send",
 		Callback = function()
