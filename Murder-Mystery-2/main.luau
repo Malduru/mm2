@@ -1202,27 +1202,44 @@ do
 	local function sendRoundRoleToChat(roleName)
 		local ok, err = pcall(function()
 			if Hub.RoleState and type(Hub.RoleState.Sync) == "function" then
-				pcall(Hub.RoleState.Sync, false)
+				pcall(Hub.RoleState.Sync, true)
 			end
 
 			local targetPlayer = nil
-			local cache = Hub.RoleState and Hub.RoleState.cache
-			if type(cache) == "table" then
-				for _, player in ipairs(Players:GetPlayers()) do
-					local entry = cache[player.Name] or cache[tostring(player.UserId)] or cache[player.UserId]
-					if type(entry) == "table" and entry.Role == roleName then
-						targetPlayer = player
+			for _, player in ipairs(Players:GetPlayers()) do
+				local cachedRole = nil
+				if Hub.CoinFarm and type(Hub.CoinFarm.GetCachedRole) == "function" then
+					local roleOk, roleValue = pcall(Hub.CoinFarm.GetCachedRole, player)
+					if roleOk then
+						cachedRole = roleValue
+					end
+				end
+
+				if cachedRole == roleName then
+					targetPlayer = player
+					break
+				end
+			end
+
+			if not targetPlayer then
+				local cache = Hub.RoleState and Hub.RoleState.cache
+				if type(cache) == "table" then
+					for _, player in ipairs(Players:GetPlayers()) do
+						local entry = cache[player.Name] or cache[tostring(player.UserId)] or cache[player.UserId]
+						if type(entry) == "table" and (entry.Role == roleName or entry.role == roleName) then
+							targetPlayer = player
 							break
+						end
 					end
 				end
 			end
 
 			if not targetPlayer then
 				for _, player in ipairs(Players:GetPlayers()) do
-					local character = player.Character
+					local character = player.Character or workspace:FindFirstChild(player.Name)
 					local backpack = player:FindFirstChildOfClass("Backpack")
 					local toolName = roleName == "Murderer" and "Knife" or "Gun"
-					if (character and character:FindFirstChild(toolName)) or (backpack and backpack:FindFirstChild(toolName)) then
+					if (character and character:FindFirstChild(toolName, true)) or (backpack and backpack:FindFirstChild(toolName, true)) then
 						targetPlayer = player
 						break
 					end
@@ -1230,7 +1247,7 @@ do
 			end
 
 			if not targetPlayer then
-				error(roleName == "Murderer" and "Katil bulunamadı. Tur başlamış ve roller yüklenmiş olmalı." or "Şerif bulunamadı. Tur başlamış ve roller yüklenmiş olmalı.")
+				error(roleName == "Murderer" and "Katil bulunamadı. Tur başladıktan sonra tekrar dene." or "Şerif bulunamadı. Tur başladıktan sonra tekrar dene.")
 			end
 
 			local textChatService = game:GetService("TextChatService")
@@ -1246,7 +1263,7 @@ do
 			Title = "Krom",
 			Content = ok and (roleName == "Murderer" and "Katilin ismi sohbete gönderildi." or "Şerifin ismi sohbete gönderildi.") or ("Gönderilemedi: " .. tostring(err)),
 			Icon = ok and "check" or "alert-circle",
-			Duration = 3,
+			Duration = 4,
 		})
 	end
 
