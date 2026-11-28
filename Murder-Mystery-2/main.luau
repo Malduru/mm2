@@ -1220,8 +1220,6 @@ do
 		ImageSize = 34,
 	})
 
-	local HttpService2 = game:GetService("HttpService")
-
 	local function foxnameSendCompatibilityReport(arg, arg2)
 		if v10.score >= 100 and not arg2 then
 			return true
@@ -1306,24 +1304,10 @@ do
 		end
 
 		task.spawn(function()
-			-- These callbacks are assigned later in the script; wait until initialization finishes.
-			for i = 1, 80 do
-				if type(fn23) == "function" and type(fn24) == "function" then
-					break
-				end
-				task.wait(0.25)
-			end
-
-			if type(fn23) ~= "function" or type(fn24) ~= "function" then
-				warn("[Compatibility] Safezone/GunDrop callbacks were not initialized in time")
-				return
-			end
-
 			local v12 = nil
 
 			for i = 1, 8 do
-				local ok, result = pcall(fn23)
-				v12 = ok and result or nil
+				v12 = fn23()
 				if not v12 then
 					task.wait(1.5)
 					continue
@@ -1331,7 +1315,7 @@ do
 				break
 			end
 
-			pcall(fn24, v12, false)
+			fn24(v12, false)
 		end)
 	end)
 
