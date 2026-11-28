@@ -1071,19 +1071,19 @@ do
 	local color2 = Color3.fromHex
 
 	Window = WindUI:CreateWindow({
-		Title = fn19("Memetfaki2 - Murder Mystery 2", Color3.fromRGB(255, 64, 96), color(255, 186, 220)),
+		Title = fn19("Memetfaki2 - Murder Mystery 2", Color3.fromHex("#8B7CFF"), color(115, 220, 255)),
 		Author = "https://www.tiktok.com/@memetfaki2",
-		Theme = "Rose",
-		Size = UDim2.fromOffset(520, 420),
+		Theme = "Lunar Abyss",
+		Size = UDim2.fromOffset(580, 460),
 		Folder = "Memetfaki_MM2",
-		SideBarWidth = 200,
+		SideBarWidth = 176,
 		Enabled = true,
 		Draggable = true,
 		OnlyMobile = false,
 		ScrollBarEnabled = true,
 		Icon = "89046428655994	",
 		Background = "rbxassetid://89046428655994",
-		BackgroundImageTransparency = 0.6,
+		BackgroundImageTransparency = 0.28,
 		User = { Enabled = true, Anonymous = false },
 		OpenButton = {
 			Title = "Basket Baby",
@@ -1092,13 +1092,13 @@ do
 			Enabled = true,
 			Draggable = true,
 			OnlyMobile = false,
-			Color = ColorSequence.new(Color3.fromHex("#ff0000"), Color3.fromHex("#b50000"), color2("#ff2929")),
+			Color = ColorSequence.new(Color3.fromHex("#6255FF"), Color3.fromHex("#3D8BFF"), color2("#A58BFF")),
 		},
 	})
 
 	foxnameMM2Runtime.window = Window
 
-	Window:Tag({ Title = "Release", Icon = "rocket", Color = Color3.fromRGB(255, 13, 49) })
+	Window:Tag({ Title = "Release", Icon = "rocket", Color = Color3.fromRGB(139, 124, 255) })
 	isOwner = false
 
 	local function fn20()
