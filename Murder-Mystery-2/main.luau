@@ -9870,6 +9870,9 @@ do
 		if roleName ~= "Murderer" and roleName ~= "Sheriff" then
 			return nil
 		end
+		if fn28(localPlayer) == roleName and localPlayer.Character then
+			return localPlayer
+		end
 		return fn29(roleName)
 	end
 
