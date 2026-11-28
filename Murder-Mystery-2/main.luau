@@ -1699,8 +1699,6 @@ Hub.Crosshair = {
 	},
 }
 
-Hub.Spinbot = { enabled = false, speed = 1, connection = nil, humanoid = nil, originalAutoRotate = nil }
-
 Hub.HitboxExpander = {
 	enabled = false,
 	size = 6,
