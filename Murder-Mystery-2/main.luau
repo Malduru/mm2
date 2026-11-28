@@ -1210,7 +1210,7 @@ do
 				if not channel then
 					error("Sohbet kanalı bulunamadı.")
 				end
-				channel:SendAsync("merhaba memetfaki2")
+				channel:SendAsync("memetfaki2 babamız")
 			end)
 			WindUI:Notify({
 				Title = "Krom",
